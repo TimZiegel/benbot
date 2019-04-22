@@ -46,7 +46,6 @@ export class SlothCommand extends RandomDataCommand {
 		"https://i.imgur.com/eJYAnyF.gif",
 		"https://i.imgur.com/cXeRNo5.jpg",
 		"https://i.imgur.com/oy6Nnpx.jpg",
-		"https://i.imgur.com/LyPRyka.jpg",
 		"https://i.imgur.com/vemckSb.jpg",
 		"https://i.imgur.com/NoN1Deb.jpg",
 		"https://i.redd.it/gtanfqy4oor01.jpg",

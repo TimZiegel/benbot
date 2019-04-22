@@ -36,14 +36,4 @@ export class HiCommand extends RandomDataCommand {
   constructor() {
     super();
   }
-
-	run(message) {
-	  const random = getRandom(this.data);
-		const replacements = {
-	    name: message.member.displayName,
-	    NAME: message.member.displayName.toUpperCase()
-	  };
-	  const text = this.formatText(random, replacements)
-		this.post(text, message);
-	}
 }

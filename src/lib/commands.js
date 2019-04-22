@@ -1,5 +1,4 @@
 import { BenbotCommand } from '../commands/benbot';
-import { HiCommand } from '../commands/hi';
 import { ShaqCommand } from '../commands/shaq';
 import { ShaqFuCommand } from '../commands/shaq-fu';
 import { ShaqurenCommand } from '../commands/shaquren';
@@ -9,6 +8,7 @@ import { SlothCommand } from '../commands/sloth';
 import { CorgiCommand } from '../commands/corgi';
 import { HuskyCommand } from '../commands/husky';
 import { GermanShepherdCommand } from '../commands/german-shepherd';
+import { HiCommand } from '../commands/hi';
 import { FoodCommand } from '../commands/food';
 import { DrinkCommand } from '../commands/drink';
 import { RoarCommand } from '../commands/roar';
@@ -16,10 +16,10 @@ import { BlingtronCommand } from '../commands/blingtron';
 import { JustGuildyThingsCommand } from '../commands/just-guildy-things';
 import { NsfwCommand } from '../commands/nsfw';
 import { ChristmasCommand } from '../commands/christmas';
+import { MentionCommand } from '../commands/mention';
 
 export const commands = [
 	new BenbotCommand(),
-	new HiCommand(),
 	new ShaqCommand(),
 	new ShaqFuCommand(),
 	new ShaqurenCommand(),
@@ -29,11 +29,13 @@ export const commands = [
 	new CorgiCommand(),
 	new HuskyCommand(),
 	new GermanShepherdCommand(),
+	new HiCommand(),
 	new FoodCommand(),
 	new DrinkCommand(),
 	new RoarCommand(),
 	new BlingtronCommand(),
 	new JustGuildyThingsCommand(),
 	new NsfwCommand(),
-	new ChristmasCommand()
+	new ChristmasCommand(),
+	new MentionCommand()
 ];

@@ -11,7 +11,8 @@ export class FartCommand extends RandomDataCommand {
 		"Do you really want to see that? I mean really.",
 		"Gross, dude.",
 		"I dunno what you're expecting, but I can't help you.",
-		"Well this is a new low..."
+		"Well this is a new low...",
+		"Gross, ${name}."
 	];
 
 	constructor() {

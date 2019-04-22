@@ -5,7 +5,7 @@ import { bot, postMessage } from './bot';
 const { COMMAND_PREFIX } = process.env;
 
 export class Command {
-	command = 'benbot';
+	command = '';
 	aliases = [];
 
 	constructor() {}
@@ -15,9 +15,11 @@ export class Command {
 	check(message) {
 		const { content } = message;
 		const commands = [this.command, ...this.aliases];
-		const regexes = commands.map(command => (
-			new RegExp('^\\' + COMMAND_PREFIX + command + '\\b', 'i')
-		));
+		const regexes = commands
+			.filter(command => !!command)
+			.map(command => (
+				new RegExp('^\\' + COMMAND_PREFIX + command + '\\b', 'i')
+			));
 		return regexes.some(regex => regex.test(content));
 	}
 
@@ -36,7 +38,12 @@ export class RandomDataCommand extends Command {
 	}
 
 	run(message) {
-		const text = getRandom(this.data);
+		const replacements = {
+			name: message.member.displayName,
+			NAME: message.member.displayName.toUpperCase()
+		};
+		const random = getRandom(this.data);
+		const text = this.formatText(random, replacements);
 		this.post(text, message);
 	}
 

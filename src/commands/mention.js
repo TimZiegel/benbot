@@ -27,7 +27,6 @@ export class MentionCommand extends RandomDataCommand {
   }
   
   check(message) {
-    console.log(bot.user, message.isMentioned(bot.user));
     return message.isMentioned(bot.user);
   }
 }

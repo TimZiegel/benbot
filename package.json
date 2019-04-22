@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A discord bot that performs the important task of posting sloth pics. And some other stuff too, I guess.",
   "engines": {
-    "node": "10.x"
+    "node": "8.x"
   },
   "scripts": {
     "test": "nodemon --exec babel-node src/index.js",

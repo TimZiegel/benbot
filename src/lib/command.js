@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getRandom, isImageUrl } from './utils';
-import { bot, postMessage } from './bot';
+import { postMessage } from './bot';
 
 const { COMMAND_PREFIX } = process.env;
 

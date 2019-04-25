@@ -1,4 +1,3 @@
-import { getRandom } from '../lib/utils';
 import { RandomDataCommand } from '../lib/command';
 
 export class HiCommand extends RandomDataCommand {

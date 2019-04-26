@@ -1,14 +1,15 @@
 import { Command } from '../lib/command';
+import { getRandomNumberBetween } from '../lib/utils';
 
 export class LootCommand extends Command {
 	command = 'loot';
 
   rarities = [
-    { name: 'Legendary', chance: .075, color: 'fix' },
-    { name: 'Epic', chance: .2, color: 'diff' },
-    { name: 'Rare', chance: .4, color: 'md' },
-    { name: 'Uncommon', chance: .65, color: 'CSS' },
-    { name: 'Common', chance: 1, color: '' }
+    { name: 'Legendary', chance: .075, color: 'fix', value: 50 },
+    { name: 'Epic', chance: .2, color: 'diff', value: 20 },
+    { name: 'Rare', chance: .4, color: 'md', value: 10 },
+    { name: 'Uncommon', chance: .65, color: 'CSS', value: 5 },
+    { name: 'Common', chance: 1, color: '', value: 0 }
   ];
   
   data = {
@@ -22,7 +23,7 @@ export class LootCommand extends Command {
     replacements: {
       weapons: [
         {
-          type: 'Generic',
+          id: 'Generic',
           prefix: [
             'Gore',
             'Maim',
@@ -74,19 +75,33 @@ export class LootCommand extends Command {
             'spike',
             'reaper'
           ],
-          title: [
+          type: [
             
           ],
           source: [
-            
+            'fate',
+            'ravaging',
+            'entwined destinies',
+            'endless hunger',
+            'endless war',
+            'eternal struggle',
+            'the apocalypse',
+            'dark visions',
+            'apocryphal fears',
+            'nightmare tendrils',
+            'unending nightmares',
+            'destiny'
           ]
         },
         {
-          type: 'Titan',
+          id: 'Titan',
+          name: [
+            '${prefix}${suffix}, ${type} of ${source}'
+          ],
           prefix: [
             'Taesch',
             'Grond',
-            'Aman',
+            'Aman\'',
             'Eon',
             'Aeth',
             'Norg',
@@ -96,8 +111,8 @@ export class LootCommand extends Command {
             'Chaer',
             'Gorr',
             'Khor',
-            'Brael',
-            'Arg'
+            'Brael\'',
+            'Uld'
           ],
           suffix: [
             'alach',
@@ -113,19 +128,62 @@ export class LootCommand extends Command {
             'ibal',
             'us',
             'ar',
-            'innar'
+            'innar',
+            'ir'
           ],
-          title: [
-            
+          type: [
+            'greatstaff',
+            'staff',
+            'hammer',
+            'greathammer',
+            'blade',
+            'greatblade',
+            'sword',
+            'greatsword',
+            'bow',
+            'greatbow',
+            'reflecting prism',
+            'scythe',
+            'greatscythe',
+            'crescent'
           ],
           source: [
-            
+            'the waning moon',
+            'constellations',
+            'constellar constructs',
+            'planetary re-origination',
+            'the cosmos',
+            'the pantheon',
+            'titanic wrath',
+            'world breaking',
+            'world shaping',
+            'the world breaker',
+            'the world shaper',
+            'arcane reconstitution',
+            'the world soul',
+            'noble souls',
+            'the watchers',
+            'the twisting nether',
+            'infinite possibilities',
+            'the colossal order',
+            'universal order',
+            'the precursors',
+            'infinite time',
+            'life binding',
+            'justice',
+            'titanic ruin',
+            'stars',
+            'infinite possibilities',
+            'unending torment'
           ]
         },
         {
-          type: 'Elven',
+          id: 'Elven',
+          name: [
+            '${prefix}${suffix}, ${type} of ${source}'
+          ],
           prefix: [
-            'Aeal\'',
+            'Aiel\'',
             'Thas\'',
             'Anu\'',
             'Ishnu\'',
@@ -151,13 +209,145 @@ export class LootCommand extends Command {
             'quenaar',
             'ibaan',
             'amaya',
-            'quaya'
+            'quaya',
+            'dan\'el'
           ],
-          title: [
-            
+          type: [
+            'bow',
+            'greatbow',
+            'longbow',
+            'shortbow',
+            'staff',
+            'quarterstaff',
+            'greatstaff',
+            'kukri',
+            'dagger',
+            'daggers',
+            'knife',
+            'sword',
+            'dualswords',
+            'quiver',
+            'kunai',
+            'crescent',
+            'glaive',
+            'warglaive'
           ],
           source: [
-            
+            'Quel\'danas',
+            'Quel\'thalas',
+            'the Sin\'dorei',
+            'the Kal\'dorei',
+            'the Ren\'dorei',
+            'eternal night',
+            'the archdruid',
+            'the waning moon',
+            'the full moon',
+            'the world tree',
+            'the moon',
+            'the sunwell',
+            'the sun',
+            'Suramar',
+            'Zin-Azshari',
+            'Thalassian kings',
+            'eternal ancestry',
+            'Elune',
+            'Elune\'s chosen',
+            'the night warrior',
+            'endless glades',
+            'the whispering winds',
+            'the forest song',
+            'the wisps',
+            'the ancients',
+            'arcane constructs',
+            'unending war',
+            'endless withering',
+            'rustling leaves',
+            'the deep roots'
+          ]
+        },
+        {
+          id: "Scourge",
+          name: [
+            '${prefix}${suffix}, ${type} of ${source}'
+          ],
+          prefix: [
+            'Bile',
+            'Plague',
+            'Rime',
+            'Frost',
+            'Ice',
+            'Rot',
+            'Vile',
+            'Soul',
+            'Blood',
+            'Scourge',
+            'Flesh',
+            'Bone',
+            'Death',
+            'Gore',
+            'Fester',
+            'Wrath',
+            'Lich',
+            'Rune'
+          ],
+          suffix: [
+            'mourne',
+            'howl',
+            'howler',
+            'maw',
+            'spike',
+            'crush',
+            'rot',
+            'bringer',
+            'reaper',
+            'drinker',
+            'feaster',
+            'caller',
+            'splinter',
+            'foe',
+            'blister',
+            'bound destroyer'
+          ],
+          type: [
+            'sword',
+            'greatsword',
+            'runesword',
+            'dreadblade',
+            'runeblade',
+            'greatmace',
+            'corrupted blade',
+            'maul',
+            'dualswords',
+            'morningstar',
+            'axe',
+            'greataxe',
+            'dreadaxe',
+            'runeaxe',
+            'phylactery'
+          ],
+          source: [
+            'the frozen waste',
+            'the blighted lands',
+            'the borean tundra',
+            'Drakkari brutality',
+            'cruelty',
+            'undeath',
+            'a thousand souls',
+            'eternal torment',
+            'unending suffering',
+            'blighted agony',
+            'the blood champion',
+            'the fallen crusader',
+            'runic corruption',
+            'rising death',
+            'the ashen wake',
+            'ashes',
+            'the ebon hold',
+            'the dark crusade',
+            'the ashen verdict',
+            'unholy blight',
+            'howling winds',
+            'eternal damnation'
           ]
         }
       ]
@@ -172,6 +362,29 @@ export class LootCommand extends Command {
     const random = Math.random();
     const rarity = this.rarities.find(({ chance }) => chance < random) || this.rarities[this.rarities.length];
     
+  }
+  
+  getGoldValueMessage(value = 0) {
+    if (value > 500) return `Jackpot! You sold this item on the auction house for ${value}g.`;
+    else if (value > 100) return `Score! You found a buyer for this item in trade chat who paid you ${value}g.`;
+    else if (value <= 10) return `Oops. You listed this item on the auction house but forgot a couple zeroes. Your item only sold for ${value}g.`;
+    else return `You vendored this item for ${value}g.`;
+  }
+  
+  getGoldValue(name = '', rarityValue = 0) {
+    const random = Math.random();
+    if (random > .95) return this.formatGoldValue(getRandomNumberBetween(500, 1000) + rarityValue);
+    else if (random > .85) return this.formatGoldValue(getRandomNumberBetween(100, 200) + rarityValue);
+    else if (random > .05) return this.formatGoldValue(getRandomNumberBetween(1, 5) + rarityValue);
+    else {
+      let value = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
+      value = (value % 40) + 10 + rarityValue;
+      return this.formatGoldValue(value);
+    };
+  }
+  
+  formatGoldValue(value = 0) {
+    return Math.ceil(value);
   }
   
 }

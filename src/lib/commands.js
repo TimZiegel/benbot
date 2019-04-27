@@ -1,4 +1,5 @@
 import { BenbotCommand } from '../commands/benbot';
+import { LootCommand } from '../commands/loot';
 import { ShaqCommand } from '../commands/shaq';
 import { ShaqFuCommand } from '../commands/shaq-fu';
 import { ShaqurenCommand } from '../commands/shaquren';
@@ -19,7 +20,8 @@ import { ChristmasCommand } from '../commands/christmas';
 import { MentionCommand } from '../commands/mention';
 
 export const commands = [
-	new BenbotCommand(),
+  new BenbotCommand(),
+  new LootCommand(),
 	new ShaqCommand(),
 	new ShaqFuCommand(),
 	new ShaqurenCommand(),

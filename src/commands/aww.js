@@ -8,3 +8,5 @@ export class AwwCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const awwCommand = new AwwCommand();

@@ -1,17 +1,17 @@
 import 'dotenv/config';
 import { bot } from './lib/bot';
 import { commands } from './lib/commands';
-import { GoodbyeCommand } from './commands/goodbye';
-import { MessageReactionCommand } from './commands/message-reaction';
+import { goodbyeCommand } from './commands/goodbye';
+import { messageReactionCommand } from './commands/message-reaction';
+import { lootCommand } from './commands/loot';
 
 const { DISCORD_TOKEN } = process.env;
-const goodbyeCommand = new GoodbyeCommand();
-const messageReactionCommand = new MessageReactionCommand();
 
 const onMessage = message => {
 	if (message.author.bot) return;
-	const command = commands.find(cmd => cmd.check(message));
-	if (command) command.run(message);
+  const command = commands.find(cmd => cmd.check(message));
+  if (command) command.run(message);
+  else lootCommand.checkLootMessage(message);
 };
 
 bot.on('message', message => onMessage(message));

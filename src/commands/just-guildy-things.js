@@ -12,3 +12,5 @@ export class JustGuildyThingsCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const justGuildyThingsCommand = new JustGuildyThingsCommand();

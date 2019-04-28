@@ -19,3 +19,5 @@ export class FartCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const fartCommand = new FartCommand();

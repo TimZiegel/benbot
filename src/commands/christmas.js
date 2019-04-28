@@ -12,3 +12,5 @@ export class ChristmasCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const christmasCommand = new ChristmasCommand();

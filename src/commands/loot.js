@@ -1,10 +1,140 @@
-import { Command } from '../lib/command';
-import { getRandom, getRandomNumberBetween } from '../lib/utils';
 import madlibs from 'mad-libber';
+import { Command } from '../lib/command';
+import { currency } from '../lib/currency';
+import { getRandom, getRandomNumberBetween } from '../lib/utils';
 
 export class LootCommand extends Command {
-	command = 'loot';
+  command = 'loot';
+  lootChance = .04; // 1 in 25
+  lootExpiry = 3600000; // 1 hour
+  lootImage = 'assets/loot.jpg';
+  lootMessage = null;
   
+  constructor() {
+		super();
+	}
+
+  checkLootMessage(message) {
+    const random = Math.random();
+    if (!this.lootMessage && random < this.lootChance) {
+      this.lootMessage = 'pending';
+      this.postFile(this.lootImage, `A wild chest appears! Claim it by using the \`!loot\` command!`, message)
+      .then(message => this.lootMessage = message)
+      .catch(e => this.lootMessage = null);
+    } else this.clearOldLootMessages();
+  }
+
+  clearOldLootMessages() {
+    if (!this.lootMessage || this.lootMessage === 'pending') return;
+    const now = Date.now();
+    const timestamp = this.lootMessage.createdTimestamp;
+    if ((now - timestamp) > this.lootExpiry) this.lootMessage.delete().then(() => this.lootMessage = null);
+  }
+
+  run(message) {
+    if (this.lootMessage === 'pending') return;
+    if (!this.lootMessage) return this.post(`Whoops! There is no loot available.`, message);
+    const lootMessage = this.lootMessage;
+    this.lootMessage = 'pending';
+    const random = Math.random();
+    const rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
+    const data = getRandom(this.data);
+    const loot = this.getItemName(data, rarity);
+    const goldValue = this.getGoldValue(loot, rarity);
+    const goldMessage = this.getGoldValueMessage(goldValue);
+    const embedOptions = {
+      author: {
+        name: `${message.member.displayName} receives ${rarity.name} loot:`,
+        icon_url: message.author.avatarURL
+      },
+      title: `**[${loot}]**`,
+      color: rarity.color,
+      footer: {
+        text: goldMessage
+      }
+    };
+
+    lootMessage.delete()
+      .then(() => currency.give(message.author, goldValue, 'gold'))
+      .then(() => this.postEmbed(embedOptions, message))
+      .catch(e => {
+        this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
+        console.error(e);
+      });
+
+    this.lootMessage = null;
+  }
+  
+  getItemName(data, rarity) {
+    let name = '${type}';
+    if (rarity.level >= 4) name = '${prefix}${suffix}, ${type} of ${source}';
+    else if (rarity.level === 3) name = '${prefix}${suffix}';
+    else if (rarity.level === 2) name = '${type} of ${source}';
+    name = madlibs(name, data);
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  getGoldValueMessage(value = 0) {
+    if (value > 150) return `Jackpot! This item sold on the auction house for ${value}g.`;
+    else if (value > 80) return `Score! A buyer in trade chat bought this item for ${value}g.`;
+    else if (value < 10) return `Oops. You accidentally posted this item on the auction house for way below market value. ${value}g is better than nothing, right?`;
+    else return `This item was sold to a vendor for ${value}g.`;
+  }
+  
+  getGoldValue(name = '', rarity) {
+    const random = Math.random();
+    if (random > .9 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(100, 200) + rarity.value);
+    else if (random > .85) return this.formatGoldValue(getRandomNumberBetween(50, 100) + rarity.value);
+    else if (random < .1 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(1, 5));
+    else {
+      let value = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
+      value = (value % 25) + 10 + rarity.value;
+      return this.formatGoldValue(value);
+    };
+  }
+  
+  formatGoldValue(value = 0) {
+    return Math.ceil(value);
+  }
+
+  rarities = [
+    {
+      name: 'legendary',
+      level: 5,
+      chance: .1,
+      value: 60,
+      color: 0xFF8000
+    },
+    {
+      name: 'epic',
+      level: 4,
+      chance: .3,
+      value: 30,
+      color: 0xA335EE
+    },
+    {
+      name: 'rare',
+      level: 3,
+      chance: .5,
+      value: 20,
+      color: 0x0070DD
+    },
+    {
+      name: 'uncommon',
+      level: 2,
+      chance: .75,
+      value: 10,
+      color: 0x1EFF00
+    },
+    {
+      name: 'common',
+      level: 1,
+      chance: 1,
+      value: 0,
+      color: 0x9D9D9D
+    }
+  ];
+
   data = [
     {
       id: 'Generic',
@@ -206,7 +336,6 @@ export class LootCommand extends Command {
         'Taesch',
         'Grond',
         'Aman\'',
-        'Eon',
         'Aeth',
         'Norg',
         'Aggr',
@@ -232,6 +361,7 @@ export class LootCommand extends Command {
         'ibal',
         'us',
         'ar',
+        'az',
         'innar',
         'ir'
       ],
@@ -763,7 +893,7 @@ export class LootCommand extends Command {
         'Shadow ',
         'Abyssal ',
         'Void ',
-        'Shath\'yar ',
+        'Shath\'yari ',
         'Aqir ',
         'Nraqi ',
         'Nerubian ',
@@ -791,6 +921,7 @@ export class LootCommand extends Command {
       ],
       type: [
         'dagger',
+        'paired daggers',
         'knife',
         'ritual knife',
         'blade',
@@ -827,94 +958,250 @@ export class LootCommand extends Command {
         'the all-seeing eye',
         'the drowned'
       ]
+    }, {
+      id: 'Tauren',
+      prefix: [
+        'Anshe\'s ',
+        'Earthmother\'s ',
+        'Sunwalker\'s ',
+        'Ancestral ',
+        'Chieftan\'s ',
+        'Cairne\'s ',
+        'Baine\'s ',
+        'Bloodhoof\'s ',
+        'Huln\'s ',
+        'Hamuul \'s ',
+        'Thunder\'s ',
+        'Spirit\'s ',
+        'Spiritwalker\'s ',
+        'Seer\'s ',
+        'Sky father\'s '
+      ],
+      suffix: [
+        'protection',
+        'admonition',
+        'guidance',
+        'humility',
+        'honor',
+        'righteousness',
+        'call',
+        'refuge',
+        'peace',
+        'patience',
+        'power',
+        'strength',
+        'compassion',
+        'justice',
+        'balance',
+        'sorrow',
+        'providence'
+      ],
+      type: [
+        'club',
+        'polearm',
+        'poleaxe',
+        'runespear',
+        'spear',
+        'horn',
+        'totem',
+        'runetotem',
+        'hammer',
+        'greathammer',
+        'axe',
+        'greataxe',
+        'sword',
+        'greatsword'
+      ],
+      source: [
+        'Mulgore',
+        'Thunder Bluff',
+        'Camp Taurajo',
+        'Highmountain',
+        'the elements',
+        'balance',
+        'the chieftans',
+        'peace',
+        'unity',
+        'the clans',
+        'the Horde',
+        'the Earthen Ring',
+        'the Longwalkers',
+        'the tribes',
+        'the ancient pact',
+        'the Stonetalon Mountains',
+        'the Shu\'halo',
+        'Kalimdor',
+        'the ages',
+        'ancestral visions',
+        'foresight'
+      ]
+    }, {
+      id: "Goblin",
+      prefix: [
+        'Frag',
+        'Dazzle',
+        'Noggen',
+        'Blast',
+        'Rocket',
+        'Gear',
+        'Flux',
+        'Grapple',
+        'Jet',
+        'Ratchet',
+        'Rust',
+        'Mecha',
+        'Crash',
+        'Rumble',
+        'Doom',
+        'Techno',
+        'Grease'
+      ],
+      suffix: [
+        'fuse',
+        'spark',
+        'flame',
+        'fire',
+        'hammer',
+        'breaker',
+        'rail',
+        'bolt',
+        'cannon',
+        'catcher',
+        'bomber',
+        'sapper',
+        'coil',
+        'singe',
+        'gadget',
+        'rocker',
+        'wire'
+      ],
+      type: [
+        'gun',
+        'autoturret',
+        'explosive device',
+        'rocketbow',
+        'rockethammer',
+        'railgun',
+        'buzzsaw',
+        'rocket',
+        'laser gun',
+        'doomsday device'
+      ],
+      source: [
+        'Gadgetzan',
+        'the Bilgewater Cartel',
+        'the Trade Prince',
+        'endless tinkering',
+        'the undisputed genius',
+        'the mad scientist',
+        'Kezan',
+        'the apocalypse',
+        'pernicious candor',
+        'the trade fleets',
+        'marvellous engineering',
+        'spectacle',
+        'superior technology',
+        'absolute obliteration',
+        'complete annihilation',
+        'utter destruction',
+        'complete chaos',
+        'endless explosions',
+        'improvised ingenuity',
+        'the Undermine'
+      ]
+    }, {
+      id: 'Gnomish',
+      prefix: [
+        'UX4260-A to UX4260-B mega-',
+        'T-280 floating point beast ',
+        'RX-23 nano-',
+        'RT-63 prototype plasma ',
+        'PD-103 error-free angle ',
+        'Mark-72 thermal powered electroshock ',
+        'Augmentative noncomittal power ',
+        'Unstable temporal time ',
+        'Semistable autonomic mind ',
+        'Remote-controlled servo-routed ',
+        'Pneumatic crank-operated enemy ',
+        'Gearspun static energy ',
+        'Bespoke custom-tooled cartridge ',
+        'Semi-wireless sound dampened freon ',
+        'Galvanized magnetic coil ',
+        'Steam powered auto-',
+        'Precision micro-tabulated spring ',
+        'Thermally insulated double walled steam ',
+        'Visionary futureproof electro-',
+        'Deployable tactical emergency ',
+        'Tactile coin-operated kitten '
+      ],
+      suffix: [
+        'compiler',
+        'defragmentor',
+        'decompressor',
+        'compressor',
+        'conductor',
+        'reflector',
+        'formatter',
+        'reformatter',
+        'incrementer',
+        'deserializer',
+        'serializer',
+        'translator',
+        'transpiler',
+        'transductor',
+        'inflector',
+        'transmitter',
+        'generator',
+        'transmutator',
+        'transmogrifier',
+        'relocator',
+        'electrifier',
+        'readjuster',
+        'dilator',
+        'scrambler',
+        'dissolver',
+        'router',
+        'destroyer',
+        'melter',
+        'pummeler',
+        'exploder',
+        'combustor'
+      ],
+      type: [
+        'enigmatic device',
+        'gun',
+        'laser gun',
+        'laser bow',
+        'doomsday device',
+        'bow',
+        'sword',
+        'hammer',
+        'impregnable device',
+        'prototype weapon',
+        'experimental apparatus',
+        'perplexing mechanism'
+      ],
+      source: [
+        'the High Tinker',
+        'Gadgetzan',
+        'Gnomish ingenuity',
+        'Gnomish brilliance',
+        'the tinker\'s guild',
+        'Gnomeregan',
+        'the mechagnomes',
+        'Mechagon',
+        'King Mechagon',
+        'clockwork brilliance',
+        'shrewd creativity',
+        'expansive intellect',
+        'unlimited potential',
+        'endless posibilities',
+        'the arcforged',
+        'express convenience'
+      ]
     }
   ];
-
-  rarities = [
-    {
-      name: 'legendary',
-      chance: .1,
-      color: 'fix',
-      level: 5,
-      value: 60
-    },
-    {
-      name: 'epic',
-      chance: .25,
-      color: 'diff',
-      level: 4,
-      value: 30
-    },
-    {
-      name: 'rare',
-      chance: .45,
-      color: 'md',
-      level: 3,
-      value: 20
-    },
-    {
-      name: 'uncommon',
-      chance: .75,
-      color: 'CSS',
-      level: 2,
-      value: 10
-    },
-    {
-      name: 'common',
-      chance: 1,
-      color: '',
-      level: 1,
-      value: 0
-    }
-  ];
-
-	constructor() {
-		super();
-	}
-
-  run(message) {
-    const random = Math.random();
-    let rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
-    const data = getRandom(this.data);
-    const loot = this.getItemName(data, rarity);
-    const goldValue = this.getGoldValue(loot, rarity);
-    const gold = this.getGoldValueMessage(goldValue);
-    const text = `You receive ${rarity.name} loot: **[${loot}]**.
-    
-${gold}`;
-    this.post(text, message);
-  }
-  
-  getItemName(data, rarity) {
-    let name = '${type}';
-    if (rarity.level >= 4) name = '${prefix}${suffix}, ${type} of ${source}';
-    else if (rarity.level === 3) name = '${prefix}${suffix}';
-    else if (rarity.level === 2) name = '${type} of ${source}';
-    name = madlibs(name, data);
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  }
-
-  getGoldValueMessage(value = 0) {
-    if (value > 150) return `Jackpot! You sold this item on the auction house for ${value}g.`;
-    else if (value > 80) return `Score! You found a buyer for this item in trade chat who paid you ${value}g.`;
-    else if (value < 10) return `Oops. You listed this item on the auction house but forgot a couple zeroes. Your item only sold for ${value}g.`;
-    else return `You vendored this item for ${value}g.`;
-  }
-  
-  getGoldValue(name = '', rarity) {
-    const random = Math.random();
-    if (random > .9 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(100, 200) + rarity.value);
-    else if (random > .85) return this.formatGoldValue(getRandomNumberBetween(50, 100) + rarity.value);
-    else if (random < .1 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(1, 5));
-    else {
-      let value = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
-      value = (value % 25) + 10 + rarity.value;
-      return this.formatGoldValue(value);
-    };
-  }
-  
-  formatGoldValue(value = 0) {
-    return Math.ceil(value);
-  }
   
 }
+
+export const lootCommand = new LootCommand();

@@ -8,3 +8,5 @@ export class CorgiCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const corgiCommand = new CorgiCommand();

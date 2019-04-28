@@ -8,3 +8,5 @@ export class DrinkCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const drinkCommand = new DrinkCommand();

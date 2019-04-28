@@ -8,3 +8,5 @@ export class HuskyCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const huskyCommand = new HuskyCommand();

@@ -22,3 +22,5 @@ export class NsfwCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const nsfwCommand = new NsfwCommand();

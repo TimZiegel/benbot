@@ -25,3 +25,5 @@ export class BenbotCommand extends Command {
 		this.post(text, message);
 	}
 }
+
+export const benbotCommand = new BenbotCommand();

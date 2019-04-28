@@ -37,3 +37,5 @@ export class RoarCommand extends RandomDataCommand {
     super();
   }
 }
+
+export const roarCommand = new RoarCommand();

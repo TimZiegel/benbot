@@ -56,3 +56,5 @@ export class SlothCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const slothCommand = new SlothCommand();

@@ -18,3 +18,5 @@ export class ShaqFuCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const shaqFuCommand = new ShaqFuCommand();

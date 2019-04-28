@@ -1,6 +1,5 @@
 import { getRandom } from '../lib/utils';
 import { RandomDataCommand } from '../lib/command';
-import { postMessage } from '../lib/bot';
 
 export class GoodbyeCommand extends RandomDataCommand {
 	data = [
@@ -46,3 +45,5 @@ export class GoodbyeCommand extends RandomDataCommand {
 		this.post(text, { channel });
 	}
 }
+
+export const goodbyeCommand = new GoodbyeCommand();

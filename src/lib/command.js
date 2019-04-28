@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getRandom, isImageUrl } from './utils';
-import { postMessage } from './bot';
+import { postMessage, postFile, postEmbed } from './bot';
 
 const { COMMAND_PREFIX } = process.env;
 
@@ -25,9 +25,21 @@ export class Command {
 
 	post(text, message) {
 		const { channel } = message;
-		if (text) postMessage(text, channel);
-		else postMessage("Hrm, I couldn't find anything to post. Sorry, eh 🍁");
-	}
+		if (text) return postMessage(text, channel);
+		else return postMessage("Hrm, I couldn't find anything to post. Sorry, eh 🍁");
+  }
+  
+  postFile(file, text, message) {
+    const { channel } = message;
+    if (text) return postFile(file, text, channel);
+    else return Promise.reject();
+  }
+
+  postEmbed(options, message) {
+    const { channel } = message;
+    if (options) return postEmbed(options, channel);
+    else return Promise.reject();
+  }
 }
 
 export class RandomDataCommand extends Command {

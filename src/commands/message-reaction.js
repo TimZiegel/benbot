@@ -10,7 +10,9 @@ export class MessageReactionCommand extends Command {
 		if (message.reactions.array().length === 3) {
 			message
 				.react('🤖')
-				.catch(error => console.log(`Message reaction error: ${error}`));
+				.catch(e => console.error(`Message reaction error: ${e}`));
 		}
 	}
 }
+
+export const messageReactionCommand = new MessageReactionCommand();

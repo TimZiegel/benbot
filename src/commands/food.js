@@ -8,3 +8,5 @@ export class FoodCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const foodCommand = new FoodCommand();

@@ -1,43 +1,45 @@
-import { BenbotCommand } from '../commands/benbot';
-import { LootCommand } from '../commands/loot';
-import { ShaqCommand } from '../commands/shaq';
-import { ShaqFuCommand } from '../commands/shaq-fu';
-import { ShaqurenCommand } from '../commands/shaquren';
-import { FartCommand } from '../commands/fart';
-import { AwwCommand } from '../commands/aww';
-import { SlothCommand } from '../commands/sloth';
-import { CorgiCommand } from '../commands/corgi';
-import { HuskyCommand } from '../commands/husky';
-import { GermanShepherdCommand } from '../commands/german-shepherd';
-import { HiCommand } from '../commands/hi';
-import { FoodCommand } from '../commands/food';
-import { DrinkCommand } from '../commands/drink';
-import { RoarCommand } from '../commands/roar';
-import { BlingtronCommand } from '../commands/blingtron';
-import { JustGuildyThingsCommand } from '../commands/just-guildy-things';
-import { NsfwCommand } from '../commands/nsfw';
-import { ChristmasCommand } from '../commands/christmas';
-import { MentionCommand } from '../commands/mention';
+import { benbotCommand } from '../commands/benbot';
+import { lootCommand } from '../commands/loot';
+import { giveCurrencyCommand } from '../commands/give-currency';
+import { checkGoldCommand } from '../commands/check-gold';
+import { shaqCommand } from '../commands/shaq';
+import { shaqFuCommand } from '../commands/shaq-fu';
+import { shaqurenCommand } from '../commands/shaquren';
+import { fartCommand } from '../commands/fart';
+import { awwCommand } from '../commands/aww';
+import { slothCommand } from '../commands/sloth';
+import { corgiCommand } from '../commands/corgi';
+import { huskyCommand } from '../commands/husky';
+import { germanShepherdCommand } from '../commands/german-shepherd';
+import { hiCommand } from '../commands/hi';
+import { foodCommand } from '../commands/food';
+import { drinkCommand } from '../commands/drink';
+import { roarCommand } from '../commands/roar';
+import { blingtronCommand } from '../commands/blingtron';
+import { justGuildyThingsCommand } from '../commands/just-guildy-things';
+import { nsfwCommand } from '../commands/nsfw';
+import { christmasCommand } from '../commands/christmas';
 
 export const commands = [
-  new BenbotCommand(),
-  new LootCommand(),
-	new ShaqCommand(),
-	new ShaqFuCommand(),
-	new ShaqurenCommand(),
-	new FartCommand(),
-	new AwwCommand(),
-	new SlothCommand(),
-	new CorgiCommand(),
-	new HuskyCommand(),
-	new GermanShepherdCommand(),
-	new HiCommand(),
-	new FoodCommand(),
-	new DrinkCommand(),
-	new RoarCommand(),
-	new BlingtronCommand(),
-	new JustGuildyThingsCommand(),
-	new NsfwCommand(),
-	new ChristmasCommand(),
-	new MentionCommand()
+  benbotCommand,
+  lootCommand,
+  giveCurrencyCommand,
+  checkGoldCommand,
+	shaqCommand,
+	shaqFuCommand,
+	shaqurenCommand,
+  fartCommand,
+	awwCommand,
+	slothCommand,
+	corgiCommand,
+	huskyCommand,
+	germanShepherdCommand,
+	hiCommand,
+	foodCommand,
+	drinkCommand,
+	roarCommand,
+	blingtronCommand,
+	justGuildyThingsCommand,
+	nsfwCommand,
+	christmasCommand
 ];

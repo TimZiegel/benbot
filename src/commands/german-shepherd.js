@@ -8,3 +8,5 @@ export class GermanShepherdCommand extends SubredditImageCommand {
 		super();
 	}
 }
+
+export const germanShepherdCommand = new GermanShepherdCommand();

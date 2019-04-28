@@ -11,3 +11,5 @@ export class BlingtronCommand extends RandomDataCommand {
 		super();
 	}
 }
+
+export const blingtronCommand = new BlingtronCommand();

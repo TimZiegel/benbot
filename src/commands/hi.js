@@ -36,3 +36,5 @@ export class HiCommand extends RandomDataCommand {
     super();
   }
 }
+
+export const hiCommand = new HiCommand();

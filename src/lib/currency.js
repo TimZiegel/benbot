@@ -63,31 +63,4 @@ class Currency {
   }
 }
 
-export const giveCurrency = (user, amount = 0, type = 'gold') => {
-  const ref = getUserRef;
-  const data = {
-    [type]: FieldValue.increment(amount),
-    timestamp: FieldValue.serverTimestamp()
-  };
-  return ref.set(data, { merge: true });
-};
-
-export const takeCurrency = async (user, amount = 0, type = 'gold') => {
-  const { username, discriminator } = user;
-  const ref = db.collection('users').doc(`${username}#${discriminator}`);
-  const doc = await ref.get();
-  const hasEnoughCurrency = doc && doc[type] && doc[type] >= amount;
-
-  if (hasEnoughCurrency) {
-    const data = {
-      [type]: FieldValue.increment(-amount),
-      timestamp: FieldValue.serverTimestamp()
-    };
-    return ref.set(data, { merge: true });
-  } else {
-    const currentAmount = doc && doc[type] ? doc[type] : 0;
-    throw new NotEnoughCurrencyError(currentAmount, amount, type);
-  }
-};
-
 export const currency = new Currency();

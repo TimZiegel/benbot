@@ -3,39 +3,86 @@ import { Command } from '../lib/command';
 import { currency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween } from '../lib/utils';
 
+export const lootStatus = {
+  NONE: 'none',
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  CLAIMED: 'claimed'
+};
+
 export class LootCommand extends Command {
   command = 'loot';
-  lootChance = .04; // 1 in 25
-  lootExpiry = 3600000; // 1 hour
+
+  lootChance = .075; // Each post has a 1 in 13.333 (repeating of course) chance to start the loot timer
+  lootDelay = 3600000; // When loot is triggered to spawn, delay it for a random time between 0ms and 1 hour
+  lootExpiry = 3600000; // If loot is triggered and no one has claimed it within 1 hour, it can be deleted
   lootImage = 'assets/loot.jpg';
+  lootStatus = lootStatus.NONE;
   lootMessage = null;
+  lootTimer = null;
+  lootSpawnText = 'A wild chest appears! Use the `!loot` command to claim it!';
+  lootUnavailableText = 'Whoops! There is no loot available.';
   
   constructor() {
 		super();
 	}
 
-  checkLootMessage(message) {
+  checkForLoot(message) {
     const random = Math.random();
-    if (!this.lootMessage && random < this.lootChance) {
-      this.lootMessage = 'pending';
-      this.postFile(this.lootImage, `A wild chest appears! Claim it by using the \`!loot\` command!`, message)
-      .then(message => this.lootMessage = message)
-      .catch(e => this.lootMessage = null);
-    } else this.clearOldLootMessages();
+    if (this.lootStatus === lootStatus.NONE && random < this.lootChance) this.startLootTimer(message);
+    else this.checkLootMessageExpiry();
   }
 
-  clearOldLootMessages() {
-    if (!this.lootMessage || this.lootMessage === 'pending') return;
+  startLootTimer(message) {
+    this.lootStatus = lootStatus.PENDING;
+    const delay = getRandomNumberBetween(0, this.lootDelay);
+    this.lootTimer = setTimeout(() => this.postLootMessage(message), delay);
+  }
+
+  postLootMessage(message) {
+    return this.postFile(this.lootImage, this.lootSpawnText, message)
+      .then(message => this.setLootMessage(message))
+      .catch(e => this.setLootMessage(null));
+  }
+
+  setLootMessage(message = null) {
+    clearTimeout(this.lootTimer);
+    this.lootTimer = null;
+    
+    if (message) {
+      this.lootMessage = message;
+      this.lootStatus = lootStatus.ACTIVE;
+    } else {
+      this.lootMessage = null;
+      this.lootStatus = lootStatus.NONE;
+    }
+  }
+
+  hasLootMessage() {
+    return this.lootStatus === lootStatus.ACTIVE && !!this.lootMessage;
+  }
+
+  checkLootMessageExpiry() {
+    if (!this.hasLootMessage()) return;
     const now = Date.now();
     const timestamp = this.lootMessage.createdTimestamp;
-    if ((now - timestamp) > this.lootExpiry) this.lootMessage.delete().then(() => this.lootMessage = null);
+    const lootAge = now - timestamp;
+    if (lootAge > this.lootExpiry) {
+      this.lootMessage.delete()
+        .then(() => this.setLootMessage(null))
+        .catch(() => this.setLootMessage(null));
+    }
+  }
+
+  giveLootCurrency(message, user, gold) {
+    if (message.guild.available && message.guild.id !== process.env.STAGING_GUILD) return currency.give(user, gold, 'gold');
+    else return Promise.resolve(true);
   }
 
   run(message) {
-    if (this.lootMessage === 'pending') return;
-    if (!this.lootMessage) return this.post(`Whoops! There is no loot available.`, message);
-    const lootMessage = this.lootMessage;
-    this.lootMessage = 'pending';
+    if (this.lootStatus === lootStatus.CLAIMED) return;
+    if (!this.hasLootMessage()) return this.post(this.lootUnavailableText, message);
+    this.lootStatus = lootStatus.CLAIMED;
     const random = Math.random();
     const rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
     const data = getRandom(this.data);
@@ -54,15 +101,15 @@ export class LootCommand extends Command {
       }
     };
 
-    lootMessage.delete()
-      .then(() => currency.give(message.author, goldValue, 'gold'))
+    this.lootMessage.delete()
+      .then(() => this.giveLootCurrency(message, message.author, goldValue))
       .then(() => this.postEmbed(embedOptions, message))
+      .then(() => this.setLootMessage(null))
       .catch(e => {
         this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
+        this.setLootMessage(null);
         console.error(e);
       });
-
-    this.lootMessage = null;
   }
   
   getItemName(data, rarity) {

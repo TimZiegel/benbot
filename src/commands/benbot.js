@@ -22,7 +22,7 @@ export class BenbotCommand extends Command {
 			.map(({ command }) => `${COMMAND_PREFIX}${command}`)
 			.join('\n');
 		const text = this.preamble + '```' + names + '```';
-		this.post(text, message);
+    this.post(text, message);
 	}
 }
 

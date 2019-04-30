@@ -3,7 +3,7 @@ import { bot } from './lib/bot';
 import { commands } from './lib/commands';
 import { goodbyeCommand } from './commands/goodbye';
 import { messageReactionCommand } from './commands/message-reaction';
-import { lootCommand } from './commands/loot';
+import { lootCommand, LootCommand } from './commands/loot';
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -11,7 +11,7 @@ const onMessage = message => {
 	if (message.author.bot) return;
   const command = commands.find(cmd => cmd.check(message));
   if (command) command.run(message);
-  else lootCommand.checkLootMessage(message);
+  if (command && !(command instanceof LootCommand)) lootCommand.checkForLoot(message);
 };
 
 bot.on('message', message => onMessage(message));

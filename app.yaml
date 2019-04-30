@@ -8,4 +8,5 @@ resources:
   disk_size_gb: 10
 env_variables:
   COMMAND_PREFIX: "!"
+  STAGING_GUILD: "336585541380341770"
   DISCORD_TOKEN: "Mzg3NDEwMzYzMzExOTgwNTQ0.XLvFSw.439z6EnHS2qQ_FWPy0crnPdhgyw"

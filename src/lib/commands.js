@@ -1,5 +1,6 @@
 import { benbotCommand } from '../commands/benbot';
 import { lootCommand } from '../commands/loot';
+import { lootStatusCommand } from '../commands/loot-status';
 import { giveCurrencyCommand } from '../commands/give-currency';
 import { checkGoldCommand } from '../commands/check-gold';
 import { shaqCommand } from '../commands/shaq';
@@ -23,6 +24,7 @@ import { christmasCommand } from '../commands/christmas';
 export const commands = [
   benbotCommand,
   lootCommand,
+  lootStatusCommand,
   giveCurrencyCommand,
   checkGoldCommand,
 	shaqCommand,

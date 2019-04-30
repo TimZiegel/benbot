@@ -1,7 +1,7 @@
 import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
 import { currency } from '../lib/currency';
-import { getRandom, getRandomNumberBetween } from '../lib/utils';
+import { getRandom, getRandomNumberBetween, isStaging } from '../lib/utils';
 
 export const lootStatus = {
   NONE: 'none',
@@ -75,7 +75,7 @@ export class LootCommand extends Command {
   }
 
   giveLootCurrency(message, user, gold) {
-    if (message.guild.available && message.guild.id !== process.env.STAGING_GUILD) return currency.give(user, gold, 'gold');
+    if (!isStaging(message.guild)) return currency.give(user, gold, 'gold');
     else return Promise.resolve(true);
   }
 
@@ -1245,6 +1245,95 @@ export class LootCommand extends Command {
         'endless posibilities',
         'the arcforged',
         'express convenience'
+      ]
+    },
+    {
+      id: "Mage",
+      prefix: [
+        "Ebon",
+        "Ice",
+        "Frost",
+        "Hail",
+        "Winter",
+        "Glacial ",
+        "Wild",
+        "Heat",
+        "Dragon",
+        "Pheonix",
+        "Blast",
+        "Heart",
+        "Chrono",
+        "Nether",
+        "Smouldering "
+      ],
+      suffix: [
+        "lance",
+        "flurry",
+        "chill",
+        "freeze",
+        "vein",
+        "fire",
+        "flame",
+        "heart",
+        "storm",
+        "spike",
+        "shimmer",
+        "nova",
+        "ward",
+        "rune",
+        "grasp",
+        "flash",
+        "scorch",
+        "strike",
+        "fury",
+        "blaze",
+        "ember"
+      ],
+      type: [
+        "staff",
+        "greatstaff",
+        "battlestaff",
+        "stave",
+        "sword",
+        "dagger",
+        "divining rod",
+        "crystalline focus",
+        "mace",
+        "wand",
+        "tome",
+        "ancient tome",
+        "arcane orb",
+        "sunspear",
+        "charged core",
+        "crystal"
+      ],
+      source: [
+        "the Kirin Ton",
+        "Dalaran",
+        "the Mages' Guild",
+        "Suramar",
+        "leyline mastery",
+        "Coldarra",
+        "the Blue Dragonflight",
+        "the Red Dragonflight",
+        "the young trust",
+        "the guardian",
+        "the corrupted guardian",
+        "the last guardian",
+        "Quel\'thalas",
+        "Silvermoon City",
+        "the Sunstrider Dynasty",
+        "Karazhan",
+        "the broken tower",
+        "invocation",
+        "terrible incantations",
+        "infinite power",
+        "Aegwynn",
+        "Alodi",
+        "internal conflict",
+        "overflowing power",
+        "overwhelming power",
+        "absolute desctruction"
       ]
     }
   ];

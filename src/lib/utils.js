@@ -14,3 +14,7 @@ export const isImageUrl = url => {
 		url.match(/(i.imgur.com|i.redd.it|gfycat.com)/)
 	);
 };
+
+export const isStaging = guild => {
+  return guild.available && guild.id === process.env.STAGING_GUILD;
+};

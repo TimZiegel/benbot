@@ -13,14 +13,13 @@ export class Command {
 	run() {}
 
 	check(message) {
-		const { content } = message;
 		const commands = [this.command, ...this.aliases];
 		const regexes = commands
 			.filter(command => !!command)
 			.map(command => (
 				new RegExp('^\\' + COMMAND_PREFIX + command + '\\b', 'i')
 			));
-		return regexes.some(regex => regex.test(content));
+		return regexes.some(regex => regex.test(message.content));
 	}
 
 	post(text, message) {

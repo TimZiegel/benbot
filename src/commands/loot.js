@@ -20,8 +20,8 @@ export class LootCommand extends Command {
   lootStatus = lootStatus.NONE;
   lootMessage = null;
   lootTimer = null;
+  lootTimestamp = 0;
   lootSpawnText = 'A wild chest appears! Use the `!loot` command to claim it!';
-  lootUnavailableText = 'Whoops! There is no loot available.';
   
   constructor() {
 		super();
@@ -36,6 +36,7 @@ export class LootCommand extends Command {
   startLootTimer(message) {
     this.lootStatus = lootStatus.PENDING;
     const delay = getRandomNumberBetween(0, this.lootDelay);
+    this.lootTimestamp = Date.now() + delay;
     this.lootTimer = setTimeout(() => this.postLootMessage(message), delay);
   }
 
@@ -81,7 +82,10 @@ export class LootCommand extends Command {
 
   run(message) {
     if (this.lootStatus === lootStatus.CLAIMED) return;
-    if (!this.hasLootMessage()) return this.post(this.lootUnavailableText, message);
+    if (!this.hasLootMessage()) {
+      const lootUnavailableText = getRandom(this.lootUnavailableTexts);
+      return this.post(lootUnavailableText, message);
+    }
     this.lootStatus = lootStatus.CLAIMED;
     const random = Math.random();
     const rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
@@ -143,6 +147,27 @@ export class LootCommand extends Command {
   formatGoldValue(value = 0) {
     return Math.ceil(value);
   }
+
+  lootUnavailableTexts = [
+    "Whoops! There is no loot available.",
+    "What do I look like, a charity?",
+    "Man, I just handed out loot like, a while ago.",
+    "Chill. There isn't any loot yet.",
+    "Gotta wait for loot to spawn, dawg.",
+    "You looted a... Oh wait. There isn't any loot. Sorry.",
+    "!doot",
+    "Sorry, eh. Ain't got no loot for ya.",
+    "Patience... Patience...",
+    "You loot 4,315,716,844 gold. Err... Wait, that's not right. There isn't any loot.",
+    "Sorry, we're all out of loot. Let me check the back.",
+    "Sorry, I'm fresh out of loot. Check back later.",
+    "I don't really feel like giving you loot right now. Maybe later.",
+    "IMPUDENT MORTAL! THERE IS NO LOOT!",
+    "You get nothing! You lose! Good day sir!",
+    "Oopsie doopsie! There isn't any lootsie wootsie!",
+    "I'm not really feeling the whole \"loot\" thing right now. Come back later",
+    "Say loot again. I dare you. I double dare you, motherfucker! Say loot again!"
+  ];
 
   rarities = [
     {
@@ -1308,7 +1333,7 @@ export class LootCommand extends Command {
         "crystal"
       ],
       source: [
-        "the Kirin Ton",
+        "the Kirin Tor",
         "Dalaran",
         "the Mages' Guild",
         "Suramar",

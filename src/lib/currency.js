@@ -1,7 +1,10 @@
 import { db, FieldValue } from './database';
 import { NotEnoughCurrencyError } from './errors';
 
-export const currencies = ['gold'];
+export const currencies = [{
+  name: 'gold',
+  color: 0xFFD435
+}];
 
 class Currency {
 
@@ -55,6 +58,27 @@ class Currency {
     const richerUsers = await ref.where(type, '>', amount).get();
     const rank = richerUsers.empty ? 1 : richerUsers.size + 1;
     return { amount, rank };
+  }
+  
+  async leaderboard(type = 'gold') {
+    const ref = db.collection('users');
+    const users = await ref.orderBy(type).get();
+    const leaderboard = users.empty ? [] : users.docs.map(doc => ({
+      name: doc.id,
+      ...doc.data()
+    }));
+    
+    leaderboard.forEach(user => {
+      currencies.forEach(currency => {
+        user[currency.name] = user[currency.name] || 0;
+      });
+    });
+    
+    const amounts = leaderboard.map(user => user[type]);
+    return leaderboard.map(user => ({
+      rank: amounts.indexOf(user[type]) + 1,
+      ...user
+    }));
   }
 
   getUserRef(user) {

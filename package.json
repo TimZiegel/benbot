@@ -6,12 +6,14 @@
     "node": "8.x"
   },
   "scripts": {
-    "test": "nodemon --exec babel-node src/index.js",
+    "test": "npm run gcp-config && nodemon --exec babel-node src/index.js",
     "start": "node dist/index.js",
     "build": "rimraf dist && npx babel src --out-dir dist",
     "gcp-build": "npm run build",
-    "gcp-config": "gcloud config set project carbide-legend-238019",
+    "gcp-account": "gcloud auth login timothy.ziegel@gmail.com",
+    "gcp-project": "gcloud config set project carbide-legend-238019",
     "gcp-deploy": "gcloud app deploy",
+    "gcp-config": "npm run gcp-account && npm run gcp-project",
     "deploy": "npm run gcp-config && npm run gcp-deploy",
     "publish": "npm run deploy"
   },

@@ -3,6 +3,7 @@ import { lootCommand } from '../commands/loot';
 import { lootStatusCommand } from '../commands/loot-status';
 import { giveCurrencyCommand } from '../commands/give-currency';
 import { checkGoldCommand } from '../commands/check-gold';
+import { leaderboardCommand } from '../commands/leaderboard';
 import { shaqCommand } from '../commands/shaq';
 import { shaqFuCommand } from '../commands/shaq-fu';
 import { shaqurenCommand } from '../commands/shaquren';
@@ -26,7 +27,8 @@ export const commands = [
   lootCommand,
   lootStatusCommand,
   giveCurrencyCommand,
-  checkGoldCommand,
+	checkGoldCommand,
+	leaderboardCommand,
 	shaqCommand,
 	shaqFuCommand,
 	shaqurenCommand,

@@ -1,5 +1,5 @@
 import { Command } from '../lib/command';
-import { currency } from '../lib/currency';
+import { currency, currencies } from '../lib/currency';
 
 export class CheckGoldCommand extends Command {
   command = 'gold';
@@ -13,6 +13,7 @@ export class CheckGoldCommand extends Command {
 
   async run(message) {
     try {
+      const { color } = currencies.find(({ type }) => name === this.type);
       const { amount, rank } = await currency.rank(message.author, this.type);
       const formattedAmount = amount.toLocaleString('en-US');
       const data = {
@@ -22,7 +23,7 @@ export class CheckGoldCommand extends Command {
         },
         title: `${formattedAmount} ${this.type}`,
         description: `Rank: ${rank}`,
-        color: 0xFFD700
+        color
       };
       return this.postEmbed(data, message);
     } catch (e) {

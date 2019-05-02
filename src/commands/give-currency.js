@@ -14,7 +14,7 @@ export class GiveCurrencyCommand extends Command {
 
 	run(message) {
     // TODO: infer type from message
-    const type = currencies[0].name;
+    const type = currencies[0].type;
     const mentions = message.mentions.users.array();
     if (!mentions.length) return this.post(`Whoops! You must mention a user (or users) to give currency to.`, message);
     const trickery = mentions.find(user => user.id === message.author.id);

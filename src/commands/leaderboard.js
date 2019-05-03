@@ -1,5 +1,6 @@
 import { Command } from '../lib/command';
 import { currency, currencies } from '../lib/currency';
+import { humanize } from '../lib/utils';
 
 export class LeaderboardCommand extends Command {
   command = 'leaderboard';
@@ -18,7 +19,7 @@ export class LeaderboardCommand extends Command {
       const users = await currency.leaderboard(this.type);
       const fields = users
         .map(user => ({
-          [this.type]: (user[this.type] || 0).toLocaleString('en-US'),
+          [this.type]: humanize(user[this.type] || 0),
           ...user
         }))
         .map(user => ({

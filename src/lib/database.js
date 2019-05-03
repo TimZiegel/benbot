@@ -1,14 +1,16 @@
 import Firestore from '@google-cloud/firestore';
+import { isTestBot } from './utils';
 
-const { NODE_ENV, PROJECT_ID, GOOGLE_CREDENTIALS } = process.env;
+const { PROJECT_ID, GOOGLE_CREDENTIALS } = process.env;
+const { FieldValue } = Firestore;
 
 const options = {};
 
-if (NODE_ENV !== 'production') {
+if (isTestBot()) {
   options.projectId = PROJECT_ID;
   options.keyFilename = GOOGLE_CREDENTIALS;
 }
 
 export const db = new Firestore(options);
-
-export const FieldValue = Firestore.FieldValue;
+export const increment = amount => FieldValue.increment(amount);
+export const timestamp = () => FieldValue.serverTimestamp();

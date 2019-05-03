@@ -1,29 +1,23 @@
-import { db, FieldValue } from './database';
-import { currencies } from './currency';
-
-const defaultValues = {
-  name: '',
-  timestamp: 0
-};
-
-currencies.forEach(({ type }) => defaultValues[type] = 0);
+import { db, timestamp } from './database';
 
 export class Users {
   
   collection = db.collection('users');
   
   async set(user, data = {}, merge = true) {
-    const newData = { ...data, timestamp: FieldValue.serverTimestamp() };
+    const name = user.username || '';
+    const newData = { ...data, name, timestamp: timestamp() };
     return this.getRef(user).set(newData, { merge });
+  }
+
+  async get(user) {
+    const doc = await this.getRef(user).get();
+    return doc.exists ? doc.data() : null;
   }
   
   getRef(user) {
-    return this.collection.doc(user.id);
-  }
-  
-  async get(user) {
-    const doc = await this.getRef(user.id).get();
-    return doc.exists ? doc.data() : null;
+    const { username, discriminator } = user;
+    return this.collection.doc(`${username}#${discriminator}`);
   }
 }
 

@@ -1,7 +1,7 @@
 import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
 import { currency } from '../lib/currency';
-import { getRandom, getRandomNumberBetween, isStaging } from '../lib/utils';
+import { getRandom, getRandomNumberBetween, isTestServer, isTestBot } from '../lib/utils';
 
 export const lootStatus = {
   NONE: 'none',
@@ -28,6 +28,7 @@ export class LootCommand extends Command {
 	}
 
   checkForLoot(message) {
+    if (!isTestBot() && isTestServer()) return;
     const random = Math.random();
     if (this.lootStatus === lootStatus.NONE && random < this.lootChance) this.startLootTimer(message);
     else this.checkLootMessageExpiry();
@@ -75,11 +76,6 @@ export class LootCommand extends Command {
     }
   }
 
-  giveLootCurrency(message, user, gold) {
-    if (!isStaging(message.guild)) return currency.give(user, gold, 'gold');
-    else return Promise.resolve(true);
-  }
-
   run(message) {
     if (this.lootStatus === lootStatus.CLAIMED) return;
     if (!this.hasLootMessage()) {
@@ -106,7 +102,7 @@ export class LootCommand extends Command {
     };
 
     this.lootMessage.delete()
-      .then(() => this.giveLootCurrency(message, message.author, goldValue))
+      .then(() => currency.give(message.author, goldValue, 'gold'))
       .then(() => this.postEmbed(embedOptions, message))
       .then(() => this.setLootMessage(null))
       .catch(e => {
@@ -590,7 +586,8 @@ export class LootCommand extends Command {
         'Lich',
         'Rune',
         'Ebon',
-        'Shadow'
+        'Shadow',
+        'Lich'
       ],
       suffix: [
         'mourne',
@@ -609,6 +606,7 @@ export class LootCommand extends Command {
         'foe',
         'blister',
         'flayer',
+        'chain',
         'bound destroyer'
       ],
       type: [
@@ -653,7 +651,14 @@ export class LootCommand extends Command {
         'unholy blight',
         'howling winds',
         'eternal damnation',
-        'endless hunger'
+        'endless hunger',
+        'the forgotten crypt',
+        'Naxxramas',
+        'the necropolis',
+        'the eternal lich',
+        'servitude',
+        'damnation',
+        'Kel\'thuzad'
       ]
     },
     {

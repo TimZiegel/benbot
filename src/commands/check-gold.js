@@ -1,5 +1,6 @@
 import { Command } from '../lib/command';
 import { currency, currencies } from '../lib/currency';
+import { humanize } from '../lib/utils';
 
 export class CheckGoldCommand extends Command {
   command = 'gold';
@@ -15,13 +16,12 @@ export class CheckGoldCommand extends Command {
     try {
       const { color } = currencies.find(({ type }) => name === this.type);
       const { amount, rank } = await currency.rank(message.author, this.type);
-      const formattedAmount = amount.toLocaleString('en-US');
       const data = {
         author: {
           name: message.member.displayName,
           icon_url: message.author.avatarURL
         },
-        title: `${formattedAmount} ${this.type}`,
+        title: `${humanize(amount)} ${this.type}`,
         description: `Rank: ${rank}`,
         color
       };

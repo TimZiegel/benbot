@@ -15,6 +15,14 @@ export const isImageUrl = url => {
 	);
 };
 
-export const isStaging = guild => {
-  return guild.available && guild.id === process.env.STAGING_GUILD;
+export const isTestServer = guild => {
+  return guild.available && guild.id === process.env.TEST_SERVER;
+};
+
+export const isTestBot = () => {
+	return process.env.NODE_ENV !== 'production';
+};
+
+export const humanize = number => {
+	return (number || 0).toLocaleString('en-US');
 };

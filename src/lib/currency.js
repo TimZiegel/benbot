@@ -1,31 +1,35 @@
-import { db, FieldValue } from './database';
+import { increment } from './database';
 import { NotEnoughCurrencyError } from './errors';
 import { users } from './users';
+import { isTestBot } from './utils';
 
 export const currencies = [{
   type: 'gold',
   color: 0xFFD435
 }];
 
-class Currency {
+export class Currency {
 
   constructor() {}
 
   async give(user, amount = 0, type = 'gold') {
-    const data = { [type]: FieldValue.increment(amount) };
+    //if (isTestBot()) return true;
+    const data = { [type]: increment(amount) };
     return users.set(user, data);
   }
 
   async take(user, amount = 0, type = 'gold') {
+    //if (isTestBot()) return true;
     const currentAmount = await this.amount(user);
     const hasEnoughCurrency = currentAmount >= amount;
     if (!hasEnoughCurrency) throw new NotEnoughCurrencyError(currentAmount, amount, type);
     
-    const data = { [type]: FieldValue.increment(-amount) };
+    const data = { [type]: increment(-amount) };
     return users.set(user, data);
   }
 
   async set(user, amount = 0, type = 'gold') {
+    //if (isTestBot()) return true;
     const data = { [type]: amount };
     return users.set(user, data);
   }

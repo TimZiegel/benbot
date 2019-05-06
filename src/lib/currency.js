@@ -13,13 +13,13 @@ export class Currency {
   constructor() {}
 
   async give(user, amount = 0, type = 'gold') {
-    //if (isTestBot()) return true;
+    if (isTestBot()) return true;
     const data = { [type]: increment(amount) };
     return users.set(user, data);
   }
 
   async take(user, amount = 0, type = 'gold') {
-    //if (isTestBot()) return true;
+    if (isTestBot()) return true;
     const currentAmount = await this.amount(user);
     const hasEnoughCurrency = currentAmount >= amount;
     if (!hasEnoughCurrency) throw new NotEnoughCurrencyError(currentAmount, amount, type);
@@ -29,7 +29,7 @@ export class Currency {
   }
 
   async set(user, amount = 0, type = 'gold') {
-    //if (isTestBot()) return true;
+    if (isTestBot()) return true;
     const data = { [type]: amount };
     return users.set(user, data);
   }

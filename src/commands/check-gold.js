@@ -14,7 +14,7 @@ export class CheckGoldCommand extends Command {
 
   async run(message) {
     try {
-      const { color } = currencies.find(({ type }) => name === this.type);
+      const { color } = currencies.find(({ type }) => type === this.type);
       const { amount, rank } = await currency.rank(message.author, this.type);
       const data = {
         author: {

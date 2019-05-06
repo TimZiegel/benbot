@@ -29,7 +29,7 @@ export class LootCommand extends Command {
 	}
 
   checkForLoot(message) {
-    if (!isTestBot() && isTestServer()) return;
+    if (!isTestBot() && isTestServer(message.guild)) return;
     const random = Math.random();
     if (this.lootStatus === lootStatus.NONE && random < this.lootChance) this.startLootTimer(message);
     else this.checkLootMessageExpiry();

@@ -16,7 +16,7 @@ export const isImageUrl = url => {
 };
 
 export const isTestServer = guild => {
-  return guild.available && guild.id === process.env.TEST_SERVER;
+  return guild && guild.available && guild.id === process.env.TEST_SERVER;
 };
 
 export const isTestBot = () => {

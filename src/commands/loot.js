@@ -2,6 +2,7 @@ import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
 import { currency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, isTestServer, isTestBot } from '../lib/utils';
+import { colors } from '../lib/colors';
 
 export const lootStatus = {
   NONE: 'none',
@@ -171,35 +172,35 @@ export class LootCommand extends Command {
       level: 5,
       chance: .1,
       value: 60,
-      color: 0xFF8000
+      color: colors.legendary
     },
     {
       name: 'epic',
       level: 4,
       chance: .3,
       value: 30,
-      color: 0xA335EE
+      color: colors.epic
     },
     {
       name: 'rare',
       level: 3,
       chance: .5,
       value: 20,
-      color: 0x0070DD
+      color: colors.rare
     },
     {
       name: 'uncommon',
       level: 2,
       chance: .75,
       value: 10,
-      color: 0x1EFF00
+      color: colors.uncommon
     },
     {
       name: 'common',
       level: 1,
       chance: 1,
       value: 0,
-      color: 0x9D9D9D
+      color: colors.common
     }
   ];
 

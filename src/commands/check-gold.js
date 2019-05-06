@@ -16,6 +16,7 @@ export class CheckGoldCommand extends Command {
     try {
       const { color } = currencies.find(({ type }) => type === this.type);
       const { amount, rank } = await currency.rank(message.author, this.type);
+      
       const data = {
         author: {
           name: message.member.displayName,
@@ -25,6 +26,7 @@ export class CheckGoldCommand extends Command {
         description: `Rank: ${rank}`,
         color
       };
+      
       return this.postEmbed(data, message);
     } catch (e) {
       this.post(`Whoops! Something went wrong while checking your bank account.`, message);

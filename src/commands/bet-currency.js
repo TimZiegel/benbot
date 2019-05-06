@@ -2,6 +2,7 @@ import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
 import { currency, currencies } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, humanize } from '../lib/utils';
+import { colors } from '../lib/colors';
 
 export class BetCurrencyCommand extends Command {
   command = 'bet';
@@ -18,7 +19,7 @@ export class BetCurrencyCommand extends Command {
       "You rolled ${roll}. Damn.",
       "Yesss! I mean, ooh. Sorry. You rolled ${roll}.",
       "You rolled 142! Oh no, wait. You rolled ${roll}. Unfortunate.",
-      "You rolled ${roll}. What d'you reckon I should spend this ${amount} ${type} on?",
+      "You rolled ${roll}. I think I'll buy a mount with that ${amount} ${type}.",
       "HAHAHAHAHA! I mean, sorry. You rolled ${roll}.",
       "${roll}. Sorry.",
       "You won a new car!!! Just kidding. You rolled ${roll}.",
@@ -77,19 +78,17 @@ export class BetCurrencyCommand extends Command {
     if (amount > currentAmount) return this.post(`Whoops! You can't bet ${humanize(amount)} ${type}. You've only got ${humanize(currentAmount)}.`, message);
     
     const result = this.roll(amount, type);
+    const amountLeft = currentAmount - amount + result.winnings;
+    
     const embedOptions = {
-      color,
-      // author: {
-      //   name: message.member.displayName,
-      //   icon_url: message.author.avatarURL
-      // },
+      color: result.won ? color : colors.red,
       title: result.title,
       footer: {
-        text: result.message
+        text: `${result.message} You have ${amountLeft} ${type} left.`
       }
     };
     
-    const promise = result.winnings ? currency.give(message.author, result.winnings - amount) : currency.take(message.author, amount);
+    const promise = result.won ? currency.give(message.author, result.winnings - amount) : currency.take(message.author, amount);
     return promise
       .then(() => this.postEmbed(embedOptions, message))
       .catch(e => this.post(`Whoops! Something went wrong with your bet. Sorry, eh.`, message));
@@ -126,10 +125,12 @@ export class BetCurrencyCommand extends Command {
       title = madlibs(getRandom(this.data.unlucky), replacements);
     }
     
-    if (winnings > 0) message = `You earned ${multiplier}x your bet and won ${humanize(winnings)} ${type}.`;
+    const won = winnings > 0;
+    if (won) message = `You earned ${multiplier}x your bet and won ${humanize(winnings)} ${type}.`;
     else message = `You lost ${humanize(amount)} ${type}.`;
     
     return {
+      won,
       roll,
       multiplier,
       winnings,

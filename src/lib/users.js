@@ -1,23 +1,24 @@
-import { db, timestamp } from './database';
+import { db } from './database';
 
 export class Users {
   
-  collection = db.collection('users');
+  table = db.table('users');
   
   async set(user, data = {}, merge = true) {
-    const name = user.username || '';
-    const newData = { ...data, name, timestamp: timestamp() };
-    return this.getRef(user).set(newData, { merge });
+    const id = this.getId(user);
+    const newData = { ...data, name: user.username };
+    return db.set(id, this.table, newData, merge);
   }
 
   async get(user) {
-    const doc = await this.getRef(user).get();
-    return doc.exists ? doc.data() : null;
+    const id = this.getId(user);
+    return db.get(id, this.table);
   }
   
-  getRef(user) {
+  getId(user) {
+    if ('string' === typeof user) return user;
     const { username, discriminator } = user;
-    return this.collection.doc(`${username}#${discriminator}`);
+    return `${username}#${discriminator}`;
   }
 }
 

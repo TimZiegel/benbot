@@ -18,14 +18,19 @@ export class LeaderboardCommand extends Command {
       const { color } = currencies.find(({ type }) => type === this.type);
       const users = await currency.leaderboard(this.type);
       const fields = users
-        .map(user => ({
-          [this.type]: humanize(user[this.type] || 0),
-          ...user
-        }))
-        .map(user => ({
-          name: `**${user.name}:** ${user[this.type]} ${this.type}`,
-          value: `Rank: ${user.rank}`
-        }));
+        .slice(0, this.cutoff)
+        .map(user => {
+          const currency = humanize(user[this.type] || 0);
+          let emoji = '';
+          
+          if (user.rank === 1) emoji = ':first_place:';
+          else if (user.rank === 2) emoji = ':second_place:';
+          else if (user.rank === 3) emoji = ':third_place:';
+          
+          const name = `#${user.rank}: **${user.name}** ${emoji}`.trim();
+          const value = `${currency} ${this.type}`;
+          return { name, value };
+        });
         
       const embedOptions = {
         color,

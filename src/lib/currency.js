@@ -1,11 +1,11 @@
-import { increment } from './database';
+import { db, increment } from './database';
 import { NotEnoughCurrencyError } from './errors';
 import { users } from './users';
-import { isTestBot } from './utils';
+import { colors } from '../lib/colors';
 
 export const currencies = [{
   type: 'gold',
-  color: 0xFFD435
+  color: colors.gold
 }];
 
 export class Currency {
@@ -13,13 +13,11 @@ export class Currency {
   constructor() {}
 
   async give(user, amount = 0, type = 'gold') {
-    if (isTestBot()) return true;
     const data = { [type]: increment(amount) };
     return users.set(user, data);
   }
 
   async take(user, amount = 0, type = 'gold') {
-    if (isTestBot()) return true;
     const currentAmount = await this.amount(user);
     const hasEnoughCurrency = currentAmount >= amount;
     if (!hasEnoughCurrency) throw new NotEnoughCurrencyError(currentAmount, amount, type);
@@ -29,7 +27,6 @@ export class Currency {
   }
 
   async set(user, amount = 0, type = 'gold') {
-    if (isTestBot()) return true;
     const data = { [type]: amount };
     return users.set(user, data);
   }
@@ -41,18 +38,23 @@ export class Currency {
 
   async rank(user, type = 'gold') {
     const amount = await this.amount(user, type);
-    const richerUsers = await users.collection.where(type, '>', amount).get();
-    const rank = richerUsers.empty ? 1 : richerUsers.size + 1;
+    const table = db.table('users');
+    const query = db.where(table, type, '>', amount);
+    const richerUsers = await db.getAll(query);
+    const rank = richerUsers.length + 1;
     return { amount, rank };
   }
   
   async leaderboard(type = 'gold') {
-    const { docs } = await users.collection.orderBy(type).get();
-    const leaderboard = docs.map(doc => ({ name: doc.id, ...doc.data() }));
-    const amounts = leaderboard.map(user => user[type] || 0);
+    const table = db.table('users');
+    const query = db.orderBy(table, type, 'desc');
+    const users = await db.getAll(query);
+    const amounts = users
+      .map(user => user[type] || 0)
+      .filter((value, index, self) => self.indexOf(value) === index);
     
-    return leaderboard.map(user => {
-      const rank = amounts.indexOf(user[type] || 0);
+    return users.map(user => {
+      const rank = amounts.indexOf(user[type] || 0) + 1;
       return { rank, ...user };
     });
   }

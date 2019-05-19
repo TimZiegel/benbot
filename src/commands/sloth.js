@@ -49,7 +49,8 @@ export class SlothCommand extends RandomDataCommand {
 		"https://i.imgur.com/vemckSb.jpg",
 		"https://i.imgur.com/NoN1Deb.jpg",
 		"https://i.redd.it/gtanfqy4oor01.jpg",
-		"https://i.imgur.com/VIyY9Xj.gifv"
+    "https://i.imgur.com/VIyY9Xj.gifv",
+    "https://i.redd.it/2xpc0ors06z21.jpg"
 	];
 
 	constructor() {

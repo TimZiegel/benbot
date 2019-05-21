@@ -6,7 +6,8 @@ export class Users {
   
   async set(user, data = {}, merge = true) {
     const id = this.getId(user);
-    const newData = { ...data, name: user.username };
+    const name = user.username;
+    const newData = { ...data, name };
     return db.set(id, this.table, newData, merge);
   }
 

@@ -1,5 +1,5 @@
 import { Command } from '../lib/command';
-import { currencies, currency } from '../lib/currency';
+import { currency, defaultCurrency } from '../lib/currency';
 import { NotEnoughCurrencyError } from '../lib/errors';
 import { bot } from '../lib/bot';
 
@@ -14,7 +14,7 @@ export class GiveCurrencyCommand extends Command {
 
 	run(message) {
     // TODO: infer type from message
-    const type = currencies[0].type;
+    const { type } = defaultCurrency;
     const mentions = message.mentions.users.array();
     if (!mentions.length) return this.post(`Whoops! You must mention a user (or users) to give currency to.`, message);
     const trickery = mentions.find(user => user.id === message.author.id);

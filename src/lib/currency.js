@@ -8,16 +8,19 @@ export const currencies = [{
   color: colors.gold
 }];
 
+export const defaultCurrency = currencies[0];
+const defaultType = defaultCurrency.type;
+
 export class Currency {
 
   constructor() {}
 
-  async give(user, amount = 0, type = 'gold') {
+  async give(user, amount = 0, type = defaultType) {
     const data = { [type]: increment(amount) };
     return users.set(user, data);
   }
 
-  async take(user, amount = 0, type = 'gold') {
+  async take(user, amount = 0, type = defaultType) {
     const currentAmount = await this.amount(user);
     const hasEnoughCurrency = currentAmount >= amount;
     if (!hasEnoughCurrency) throw new NotEnoughCurrencyError(currentAmount, amount, type);
@@ -26,17 +29,17 @@ export class Currency {
     return users.set(user, data);
   }
 
-  async set(user, amount = 0, type = 'gold') {
+  async set(user, amount = 0, type = defaultType) {
     const data = { [type]: amount };
     return users.set(user, data);
   }
 
-  async amount(user, type = 'gold') {
+  async amount(user, type = defaultType) {
     const doc = await users.get(user);
     return doc && doc[type] ? doc[type] : 0;
   }
 
-  async rank(user, type = 'gold') {
+  async rank(user, type = defaultType) {
     const amount = await this.amount(user, type);
     const table = db.table('users');
     const query = db.where(table, type, '>', amount);
@@ -45,7 +48,7 @@ export class Currency {
     return { amount, rank };
   }
   
-  async leaderboard(type = 'gold') {
+  async leaderboard(type = defaultType) {
     const table = db.table('users');
     const query = db.orderBy(table, type, 'desc');
     const users = await db.getAll(query);

@@ -1,6 +1,6 @@
 import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
-import { currency, currencies } from '../lib/currency';
+import { currency, defaultCurrency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, humanize } from '../lib/utils';
 import { colors } from '../lib/colors';
 
@@ -69,7 +69,7 @@ export class BetCurrencyCommand extends Command {
   
   async run(message) {
     // TODO: infer type from message
-    const { type, color } = currencies[0];
+    const { type, color } = defaultCurrency;
     const amountString = message.content.match(/\s\d+\b/i);
     if (!amountString) return this.post(`Whoops! You must specify an amount to bet.`, message);
     const amount = parseInt(amountString[0], 10);

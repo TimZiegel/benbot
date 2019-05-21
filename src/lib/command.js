@@ -77,7 +77,7 @@ export class SubredditImageCommand extends Command {
 
 	run(message) {
 		const url = `https://www.reddit.com/r/${this.subreddit}/${this.type}.json`;
-		const posts = axios.get(url)
+		axios.get(url)
 			.then(({ data }) => this.postRandomImage(data, message))
 			.catch(e => console.error(`Could not get reddit data for ${url}: ${e}`));
 	}

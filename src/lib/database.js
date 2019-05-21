@@ -1,7 +1,6 @@
 import Firestore from '@google-cloud/firestore';
 import { FieldValue, CollectionReference, Query } from '@google-cloud/firestore';
 import { isTestBot } from './utils';
-import { deepStrictEqual } from 'assert';
 
 const { PROJECT_ID, GOOGLE_CREDENTIALS } = process.env;
 

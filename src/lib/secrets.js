@@ -17,7 +17,7 @@ export class Secrets {
   
   async find(id, user, channel) {
     try {
-      const secret = await this.get(id)
+      const secret = await this.get(id);
       if (!secret || secret.found) return false;
       
       const { bounty, message, repeatable } = secret;

@@ -3,6 +3,8 @@ import { RandomDataCommand } from '../lib/command';
 export class FartCommand extends RandomDataCommand {
 	secret = true;
 	command = 'fart';
+	help = 'Why would you do this?';
+	example = '!fart';
 
 	data = [
 		"Ummmmm...",

@@ -2,6 +2,8 @@ import { RandomDataCommand } from '../lib/command';
 
 export class JustGuildyThingsCommand extends RandomDataCommand {
 	command = 'justguildythings';
+	help = 'Displays a dumb meme about the guild.';
+	example = '!justguildythings';
 
 	data = [
 		"https://i.imgur.com/2d5LAOa.jpg",

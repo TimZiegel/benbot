@@ -13,7 +13,9 @@ export const lootStatus = {
 
 export class LootCommand extends Command {
   command = 'loot';
-
+  help = 'Loots an item if a chest has spawned. This earns gold.';
+  example = '!loot';
+  
   lootChance = .075; // Each post has a 1 in 13.333 (repeating of course) chance to start the loot timer
   lootDelay = 3600000; // When loot is triggered to spawn, delay it for a random time between 0ms and 1 hour
   lootExpiry = 3600000; // If loot is triggered and no one has claimed it within 1 hour, it can be deleted

@@ -4,9 +4,11 @@ import { commands } from '../lib/commands';
 const { COMMAND_PREFIX } = process.env;
 
 export class BenbotCommand extends Command {
-	preamble = 'Benbot, at your service! Currently, I support these commands: ';
 	command = 'benbot';
 	aliases = ['help'];
+	help = 'Show a list of all commands that Benbot can execute.';
+	example = '!benbot';
+	preamble = 'Benbot, at your service! Currently, I support these commands: ';
 
 	constructor() {
 		super();

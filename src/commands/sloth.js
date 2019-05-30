@@ -2,6 +2,8 @@ import { RandomDataCommand } from '../lib/command';
 
 export class SlothCommand extends RandomDataCommand {
 	command = 'sloth';
+	help = 'Displays a random image of a sloth.';
+	example = '!sloth';
 
 	data = [
 		"https://i.imgur.com/0pRym04.jpg",

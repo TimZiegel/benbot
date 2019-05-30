@@ -2,6 +2,8 @@ import { getRandom } from '../lib/utils';
 import { RandomDataCommand } from '../lib/command';
 
 export class GoodbyeCommand extends RandomDataCommand {
+  help = 'Says goodbye when someone leaves the server.';
+  
 	data = [
 		":( Bye ${name}...",
     "*sniff* Bye ${name}...",
@@ -26,8 +28,7 @@ export class GoodbyeCommand extends RandomDataCommand {
     "May your days be long, and your hardships few.",
     "Light be with you, ${name}.",
     "Safe travels, ${name}.",
-    "Go with honor, friend.",
-    "That's a big oof, dawg."
+    "Go with honor, friend."
 	];
 
   constructor() {

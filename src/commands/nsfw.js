@@ -4,6 +4,8 @@ export class NsfwCommand extends RandomDataCommand {
 	secret = true;
 	command = 'nsfw';
 	aliases = ['boobs', 'butts', 'butt', 'rule34'];
+	help = 'You sick fuck.';
+	example = '!nsfw';
 
 	data = [
 		"I think you meant to summon Nadekobot. I know, we look so similar.",

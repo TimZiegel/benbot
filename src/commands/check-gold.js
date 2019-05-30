@@ -4,7 +4,7 @@ import { humanize } from '../lib/utils';
 
 export class CheckGoldCommand extends Command {
   command = 'gold';
-  help = 'Checks how much gold you have left.';
+  help = 'Displays how much gold you have.';
   example = '!gold';
   type = 'gold';
 

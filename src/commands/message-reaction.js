@@ -1,6 +1,9 @@
 import { Command } from '../lib/command';
 
 export class MessageReactionCommand extends Command {
+	secret = true;
+	help = 'Reacts to a message. Benbot just wants to be part of the fun.';
+	example = '';
 	
 	constructor() {
 		super();

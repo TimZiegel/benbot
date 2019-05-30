@@ -4,8 +4,8 @@ import { humanize } from '../lib/utils';
 
 export class LeaderboardCommand extends Command {
   command = 'leaderboard';
-  help = 'Shows the top gold collectors on the server.';
-  example = '!gold';
+  help = 'Shows the top gold hoarders on the server.';
+  example = '!leaderboard';
   cutoff = 10;
   type = 'gold';
   

@@ -3,8 +3,9 @@ import { Command } from '../lib/command';
 import { lootCommand } from './loot';
 
 export class LootStatusCommand extends Command {
-	command = 'lootstatus';
   secret = true;
+  command = 'lootstatus';
+  help = 'Shh. This is a secret command.';
 
 	constructor() {
 		super();

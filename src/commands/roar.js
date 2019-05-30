@@ -1,7 +1,10 @@
 import { RandomDataCommand } from '../lib/command';
 
 export class RoarCommand extends RandomDataCommand {
-	command = 'roar';
+  command = 'roar';
+  aliases = ['druid', 'bear'];
+  help = 'Displays a random meme about Druids.';
+  example = '!roar';
 
 	data = [
     "https://i.imgur.com/tvP21e7.jpg",

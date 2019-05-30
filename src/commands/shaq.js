@@ -2,7 +2,9 @@ import { RandomDataCommand } from '../lib/command';
 
 export class ShaqCommand extends RandomDataCommand {
 	command = 'shaq';
-
+	help = 'Displays a random image of Shaq. For some reason.';
+	example = '!shaq';
+	
 	data = [
 		"https://i.imgur.com/DnT50xh.gifv",
 		"https://i.imgur.com/LI7Yfea.gifv",

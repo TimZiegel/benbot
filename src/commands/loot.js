@@ -135,7 +135,7 @@ export class LootCommand extends Command {
     const random = Math.random();
     if (random > .9 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(100, 200) + rarity.value);
     else if (random > .85) return this.formatGoldValue(getRandomNumberBetween(50, 100) + rarity.value);
-    else if (random < .1 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(1, 5));
+    else if (random < .02 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(1, 5));
     else {
       let value = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
       value = (value % 25) + 10 + rarity.value;
@@ -965,7 +965,8 @@ export class LootCommand extends Command {
         'the forest trolls',
         'the jungle trolls',
         'the ice trolls',
-        'Vol\'jin'
+        'Vol\'jin',
+        'Sen\'jin'
       ]
     }, {
       id: 'Void',
@@ -981,7 +982,15 @@ export class LootCommand extends Command {
         'Corrupting ',
         'Beholder\'s ',
         'Corruptor\'s ',
-        'The black'
+        'The black ',
+        'Slithering ',
+        'Wriggling ',
+        'C\'thraxi ',
+        'Quivering ',
+        'Phantasmal ',
+        'Spectral ',
+        'Horrifying ',
+        'Maddening '
       ],
       suffix: [
         'star',
@@ -1036,6 +1045,8 @@ export class LootCommand extends Command {
         'eternal servitude',
         'the black empire',
         'the all-seeing eye',
+        'the eight-eyed goat',
+        'the hidden watcher',
         'the drowned'
       ]
     }, {
@@ -1245,7 +1256,9 @@ export class LootCommand extends Command {
         'melter',
         'pummeler',
         'exploder',
-        'combustor'
+        'combustor',
+        'phlogistinator',
+        'dismantler'
       ],
       type: [
         'enigmatic device',

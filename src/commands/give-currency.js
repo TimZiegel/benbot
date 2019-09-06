@@ -1,5 +1,5 @@
 import { Command } from '../lib/command';
-import { currency, defaultCurrency } from '../lib/currency';
+import { currency, defaultCurrency, humanize } from '../lib/currency';
 import { NotEnoughCurrencyError } from '../lib/errors';
 import { bot } from '../lib/bot';
 
@@ -31,11 +31,11 @@ export class GiveCurrencyCommand extends Command {
       ))
       .then(() => {
         const users = mentions.map(user => user.username).join(', ');
-        this.post(`You gave ${amount} ${type} to ${users}. Thanks for your generosity!`, message);
+        this.post(`You gave ${humanize(amount)} ${type} to ${users}. Thanks for your generosity!`, message);
         if (message.isMentioned(bot.user)) this.post(`*(Wowee! What will I do with all this ${type}?)*`, message);
       })
       .catch(e => {
-        if (e instanceof NotEnoughCurrencyError) this.post(`Whoops! You don't have that much ${type}. Your ${type}: ${e.current}. Amount needed: ${e.needed}.`, message);
+        if (e instanceof NotEnoughCurrencyError) this.post(`Whoops! You don't have that much ${type}. Your ${type}: ${humanize(e.current)}. Amount needed: ${humanize(e.needed)}.`, message);
         else {
           this.post(`Whoops! Something went wrong while exchanging currency.`, message);
           console.error(e);

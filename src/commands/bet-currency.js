@@ -84,7 +84,7 @@ export class BetCurrencyCommand extends Command {
       color: result.won ? color : colors.red,
       title: result.title,
       footer: {
-        text: `${result.message} You have ${amountLeft} ${type} left.`
+        text: `${result.message} You have ${humanize(amountLeft)} ${type} left.`
       }
     };
     
@@ -101,7 +101,7 @@ export class BetCurrencyCommand extends Command {
     let title = '';
     let message = '';
     
-    const replacements = { amount: [amount + ''], roll: [roll + ''], type: [type + ''] };
+    const replacements = { amount: [humanize(amount)], roll: [roll + ''], type: [type + ''] };
     
     if (roll === 100) {
       multiplier = 10;

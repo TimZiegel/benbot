@@ -1,6 +1,6 @@
 import madlibs from 'mad-libber';
 import { Command } from '../lib/command';
-import { currency } from '../lib/currency';
+import { currency, humanize } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, isTestServer, isTestBot } from '../lib/utils';
 import { colors } from '../lib/colors';
 
@@ -117,18 +117,17 @@ export class LootCommand extends Command {
   
   getItemName(data, rarity) {
     let name = '${type}';
-    if (rarity.level >= 4) name = '${prefix}${suffix}, ${type} of ${source}';
-    else if (rarity.level === 3) name = '${prefix}${suffix}';
+    if (rarity.level >= 3) name = '${prefix}${suffix}, ${type} of ${source}';
     else if (rarity.level === 2) name = '${type} of ${source}';
     name = madlibs(name, data);
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
   getGoldValueMessage(value = 0) {
-    if (value > 150) return `Jackpot! This item sold on the auction house for ${value}g.`;
-    else if (value > 80) return `Score! A buyer in trade chat bought this item for ${value}g.`;
-    else if (value < 10) return `Oops. You accidentally posted this item on the auction house for way below market value. ${value}g is better than nothing, right?`;
-    else return `This item was sold to a vendor for ${value}g.`;
+    if (value > 150) return `Jackpot! This item sold on the auction house for ${humanize(value)}g.`;
+    else if (value > 80) return `Score! A buyer in trade chat bought this item for ${humanize(value)}g.`;
+    else if (value < 10) return `Oops. You accidentally posted this item on the auction house for way below market value. ${humanize(value)}g is better than nothing, right?`;
+    else return `This item was sold to a vendor for ${humanize(value)}g.`;
   }
   
   getGoldValue(name = '', rarity) {
@@ -1145,7 +1144,9 @@ export class LootCommand extends Command {
         'Rumble',
         'Doom',
         'Techno',
-        'Grease'
+        'Grease',
+        'Tinker',
+        'Cog'
       ],
       suffix: [
         'fuse',
@@ -1164,7 +1165,8 @@ export class LootCommand extends Command {
         'singe',
         'gadget',
         'rocker',
-        'wire'
+        'wire',
+        'blaster'
       ],
       type: [
         'gun',
@@ -1176,7 +1178,8 @@ export class LootCommand extends Command {
         'buzzsaw',
         'rocket',
         'laser gun',
-        'doomsday device'
+        'doomsday device',
+        'mechanical prosthetic'
       ],
       source: [
         'Gadgetzan',
@@ -1310,7 +1313,9 @@ export class LootCommand extends Command {
         "Heart",
         "Chrono",
         "Nether",
-        "Smouldering "
+        "Smouldering ",
+        "Arcano",
+        "Unstable Arcano"
       ],
       suffix: [
         "lance",
@@ -1333,7 +1338,8 @@ export class LootCommand extends Command {
         "strike",
         "fury",
         "blaze",
-        "ember"
+        "ember",
+        "crystal"
       ],
       type: [
         "staff",

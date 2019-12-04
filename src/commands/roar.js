@@ -1,12 +1,12 @@
-import { RandomDataCommand } from '../lib/command';
+import { RandomDataCommand } from "../lib/command";
 
 export class RoarCommand extends RandomDataCommand {
-  command = 'roar';
-  aliases = ['druid', 'bear'];
-  help = 'Displays a random meme about Druids.';
-  example = '!roar';
+  command = "roar";
+  aliases = ["druid", "bear"];
+  help = "Displays a random meme about Druids.";
+  example = "!roar";
 
-	data = [
+  data = [
     "https://i.imgur.com/tvP21e7.jpg",
     "https://i.imgur.com/Yp14Scw.jpg",
     "https://i.imgur.com/F2Zhnpa.jpg",
@@ -33,8 +33,10 @@ export class RoarCommand extends RandomDataCommand {
     "https://i.imgur.com/JjDYGQ1.jpg",
     "https://i.redd.it/zu1b45llxdo01.jpg",
     "https://i.redd.it/5a3xm64ofio01.png",
-    "https://i.redd.it/d6g2ce6a0jr01.jpg"
-	];
+    "https://i.redd.it/d6g2ce6a0jr01.jpg",
+    "https://i.imgur.com/k0ujksb.png",
+    "https://i.imgur.com/XkM1yF7.png"
+  ];
 
   constructor() {
     super();

@@ -1,11 +1,12 @@
-import 'dotenv/config';
+import env from './lib/env';
 import { bot } from './lib/bot';
+import { isTestBot } from './lib/utils';
 import { commands } from './lib/commands';
 import { goodbyeCommand } from './commands/goodbye';
 import { messageReactionCommand } from './commands/message-reaction';
 import { lootCommand, LootCommand } from './commands/loot';
 
-const { DISCORD_TOKEN } = process.env;
+const { DISCORD_TOKEN, TEST_DISCORD_TOKEN } = env;
 
 const onMessage = message => {
   if (message.author.bot) return;
@@ -17,4 +18,4 @@ const onMessage = message => {
 bot.on('message', message => onMessage(message));
 bot.on('guildMemberRemove', member => goodbyeCommand.run(member));
 bot.on('messageReactionAdd', ({ message }) => messageReactionCommand.run(message));
-bot.login(DISCORD_TOKEN);
+bot.login(isTestBot() ? TEST_DISCORD_TOKEN : DISCORD_TOKEN);

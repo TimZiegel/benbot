@@ -5,10 +5,10 @@ import {
   Query,
   Timestamp
 } from "@google-cloud/firestore";
+import env from '../lib/env';
 import { isTestBot } from "./utils";
 
-const { PROJECT_ID, GOOGLE_CREDENTIALS } = process.env;
-
+const { PROJECT_ID, GOOGLE_CREDENTIALS } = env;
 const options = {};
 
 if (isTestBot()) {

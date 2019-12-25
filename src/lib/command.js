@@ -1,8 +1,9 @@
 import axios from 'axios';
+import env from '../lib/env';
 import { getRandom, isImageUrl } from './utils';
 import { postMessage, postFile, postEmbed } from './bot';
 
-const { COMMAND_PREFIX } = process.env;
+const { COMMAND_PREFIX } = env;
 
 export class Command {
 	command = '';

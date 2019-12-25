@@ -1,3 +1,5 @@
+import { TEST_SERVER } from './env';
+
 export const getRandom = array => {
 	const index = Math.floor(Math.random() * array.length);
 	return array[index];
@@ -16,7 +18,7 @@ export const isImageUrl = url => {
 };
 
 export const isTestServer = guild => {
-  return guild && guild.available && guild.id === process.env.TEST_SERVER;
+  return guild && guild.available && guild.id === TEST_SERVER;
 };
 
 export const isTestBot = () => {

@@ -1,7 +1,8 @@
+import env from '../lib/env';
 import { Command } from '../lib/command';
 import { commands } from '../lib/commands';
 
-const { COMMAND_PREFIX } = process.env;
+const { COMMAND_PREFIX } = env;
 
 export class BenbotCommand extends Command {
 	command = 'benbot';

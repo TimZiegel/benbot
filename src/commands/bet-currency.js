@@ -6,7 +6,7 @@ import { currency, defaultCurrency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, humanize } from '../lib/utils';
 import { colors } from '../lib/colors';
 import { users } from '../lib/users';
-import db, { timestamp } from '../lib/database';
+import { db, timestamp } from '../lib/database';
 
 dayjs.extend(RelativeTime);
 
@@ -77,6 +77,8 @@ export class BetCurrencyCommand extends Command {
   
   async run(message) {
     // TODO: infer type from message
+    return this.post(`\`Sorry! Betting is temporarily disabled. It should be back soon. Blame Ben.\``, message);
+
     const user = message.author;
     const betsThisPeriod = await this.getBetsThisPeriod(user);
     if (betsThisPeriod.size > this.betsPerPeriod) {

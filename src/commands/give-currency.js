@@ -1,5 +1,6 @@
 import { Command } from '../lib/command';
-import { currency, defaultCurrency, humanize } from '../lib/currency';
+import { currency, defaultCurrency } from '../lib/currency';
+import { humanize } from '../lib/utils';
 import { NotEnoughCurrencyError } from '../lib/errors';
 import { bot } from '../lib/bot';
 

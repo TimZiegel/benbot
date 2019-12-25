@@ -17,6 +17,8 @@ export class LeaderboardCommand extends Command {
     try {
       const { color } = currencies.find(({ type }) => type === this.type);
       const users = await currency.leaderboard(this.type);
+      if (!users.length) return this.post(`Whoops! No one has any gold yet. Check back later.`, message);
+
       const fields = users
         .slice(0, this.cutoff)
         .map(user => {

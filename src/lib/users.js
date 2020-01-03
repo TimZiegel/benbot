@@ -16,6 +16,10 @@ export class Users {
     return db.get(id, this.table);
   }
   
+  async getAll() {
+    return db.getAll(this.table);
+  }
+  
   getId(user) {
     if ('string' === typeof user) return user;
     const { username, discriminator } = user;

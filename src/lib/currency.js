@@ -6,6 +6,9 @@ import { colors } from '../lib/colors';
 export const currencies = [{
   type: 'gold',
   color: colors.gold
+}, {
+  type: 'pokemon',
+  color: colors.red
 }];
 
 export const defaultCurrency = currencies[0];
@@ -49,14 +52,14 @@ export class Currency {
   }
   
   async leaderboard(type = defaultType) {
-    const table = db.table('users');
-    const query = db.orderBy(table, type, 'desc');
-    const users = await db.getAll(query);
-    const amounts = users
+    const allUsers = await users.getAll();
+    allUsers.sort((a, b) => (b[type] || 0) - (a[type] || 0));
+    
+    const amounts = allUsers
       .map(user => user[type] || 0)
       .filter((value, index, self) => self.indexOf(value) === index);
     
-    return users.map(user => {
+    return allUsers.map(user => {
       const rank = amounts.indexOf(user[type] || 0) + 1;
       return { rank, ...user };
     });

@@ -1,4 +1,6 @@
-import { TEST_SERVER } from './env';
+import env from './env';
+
+const { TEST_SERVER } = env;
 
 export const getRandom = array => {
 	const index = Math.floor(Math.random() * array.length);

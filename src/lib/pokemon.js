@@ -6,7 +6,6 @@ import { pokemonCommand } from '../commands/pokemon';
 export class Pokemon {
 
   table = db.table('pokemon');
-  duplicateConsolationGold = 100;
   
   constructor() { }
 
@@ -16,10 +15,8 @@ export class Pokemon {
     const newData = { [pokemonName]: increment(1) };
     await db.set(userId, this.table, newData, true);
     if (!caught) await currency.give(user, 1, 'pokemon');
-    else await currency.give(user, this.duplicateConsolationGold, 'gold');
     const amount = await currency.amount(user, 'pokemon');
-    const gold = caught ? this.duplicateConsolationGold : 0;
-    return { caught, gold, amount };
+    return { caught, amount };
   }
   
   async get(user) {

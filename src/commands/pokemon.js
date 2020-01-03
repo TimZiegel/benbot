@@ -4,6 +4,7 @@ import { RandomSpawnCommand } from '../lib/command';
 import { getRandom } from '../lib/utils';
 import { pokemonTypeColors } from '../lib/colors';
 import { pokemon } from '../lib/pokemon';
+import { currency } from '../lib/currency';
 
 export class PokemonCommand extends RandomSpawnCommand {
   command = 'catch';
@@ -44,10 +45,18 @@ export class PokemonCommand extends RandomSpawnCommand {
     };
     
     return pokemon.catch(message.author, this.spawnedPokemon.name)
-      .then(({ caught, gold, amount }) => {
-        embedOptions.footer.text = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
-        const times = caught === 1 ? 'time' : 'times';
-        if (caught) embedOptions.description = `${message.member.displayName} has caught this pokemon ${caught} ${times} before, and was awarded ${gold} gold instead.`;
+      .then(({ caught, amount }) => {
+        const goldValue = this.spawnedPokemon.base_experience || 100;
+        embedOptions.footer.text = `${goldValue} gold was awarded for this catch.`;
+        
+        if (caught) {
+          const times = caught === 1 ? 'time' : 'times';
+          embedOptions.description = `${message.member.displayName} has caught this Pokémon ${caught} ${times} before, and has caught has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
+        } else {
+          embedOptions.description = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
+        }
+        
+        return currency.give(message.author, goldValue, 'gold');
       })
       .then(() => this.postEmbed(embedOptions, message));
   }

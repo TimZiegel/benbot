@@ -132,14 +132,15 @@ export class RandomSpawnCommand extends Command {
   async unavailable(message) {}
   
   async run(message) {
-    if (this.spawnStatus === spawnStatus.CLAIMED) return;
+    if (this.spawnStatus === this.spawnStatuses.CLAIMED) return;
     if (!this.isActive()) return this.unavailable(message);
     this.spawnStatus = this.spawnStatuses.CLAIMED;
-    
+
     try {
       await this.claim(message, this.spawnMessage);
       this.setSpawnMessage(null);
     } catch(e) {
+      console.warn(e);
       await this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
       this.expire();
     }
@@ -148,8 +149,7 @@ export class RandomSpawnCommand extends Command {
   onMessage(message) {
     if (!isTestBot() && isTestServer(message.guild)) return;
     const random = Math.random();
-    if (this.this.spawnStatus === this.spawnStatuses.NONE && random < this.spawnChance)
-      this.startTimer(message);
+    if (this.spawnStatus === this.spawnStatuses.NONE && random < this.spawnChance) this.startTimer(message);
     else this.checkExpiry();
   }
 
@@ -159,10 +159,10 @@ export class RandomSpawnCommand extends Command {
 
     if (message) {
       this.spawnMessage = message;
-      this.this.spawnStatus = this.spawnStatuses.ACTIVE;
+      this.spawnStatus = this.spawnStatuses.ACTIVE;
     } else {
       this.spawnMessage = null;
-      this.this.spawnStatus = this.spawnStatuses.NONE;
+      this.spawnStatus = this.spawnStatuses.NONE;
     }
   }
   
@@ -174,18 +174,18 @@ export class RandomSpawnCommand extends Command {
   }
   
   startTimer(message) {
-    this.this.spawnStatus = this.spawnStatuses.PENDING;
-    const delay = getRandomNumberBetween(0, this.lootDelay);
+    this.spawnStatus = this.spawnStatuses.PENDING;
+    const delay = getRandomNumberBetween(0, this.spawnDelay);
     this.spawnTimestamp = Date.now() + delay;
     this.spawnTimer = setTimeout(() => (
       this.spawn(message)
         .then(spawnMessage => this.setSpawnMessage(spawnMessage))
-        .catch(e => this.setSpawnMessage(null))
+        .catch(() => this.setSpawnMessage(null))
     ), delay);
   }
 
   isActive() {
-    return this.this.spawnStatus === this.spawnStatuses.ACTIVE && !!this.spawnMessage;
+    return this.spawnStatus === this.spawnStatuses.ACTIVE && !!this.spawnMessage;
   }
 
   checkExpiry() {

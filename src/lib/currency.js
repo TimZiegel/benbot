@@ -5,10 +5,12 @@ import { colors } from '../lib/colors';
 
 export const currencies = [{
   type: 'gold',
-  color: colors.gold
+  color: colors.gold,
+  bettable: true
 }, {
   type: 'pokemon',
-  color: colors.red
+  color: colors.red,
+  bettable: false
 }];
 
 export const defaultCurrency = currencies[0];

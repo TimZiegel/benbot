@@ -1,10 +1,12 @@
 import { db, increment } from './database';
 import { users } from './users';
 import { currency } from './currency';
+import { pokemonCommand } from '../commands/pokemon';
 
 export class Pokemon {
-  
+
   table = db.table('pokemon');
+  duplicateConsolationGold = 100;
   
   constructor() { }
 
@@ -14,16 +16,30 @@ export class Pokemon {
     const newData = { [pokemonName]: increment(1) };
     await db.set(userId, this.table, newData, true);
     if (!caught) await currency.give(user, 1, 'pokemon');
-    return currency.amount(user, 'pokemon');
+    else await currency.give(user, this.duplicateConsolationGold, 'gold');
+    const amount = await currency.amount(user, 'pokemon');
+    const gold = caught ? this.duplicateConsolationGold : 0;
+    return { caught, gold, amount };
   }
   
   async get(user) {
     const userId = users.getId(user);
-    return db.get(userId, this.table);
+    let pokemon = await db.get(userId, this.table);
+    if (pokemon && pokemon.timestamp) {
+      const { timestamp, ...filteredPokemon } = pokemon;
+      pokemon = filteredPokemon;
+    }
+    return pokemon;
   }
   
   async getAll() {
     return db.getAll(this.table);
+  }
+
+  async getPokemonNames(user) {
+    const pokemon = await this.get(user);
+    return Object.keys(pokemon)
+      .map(name => pokemonCommand.getPokemonName({ name }));
   }
 
   async caught(user, pokemonName = '') {

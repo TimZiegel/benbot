@@ -22,14 +22,18 @@ import { blingtronCommand } from '../commands/blingtron';
 import { justGuildyThingsCommand } from '../commands/just-guildy-things';
 import { nsfwCommand } from '../commands/nsfw';
 import { christmasCommand } from '../commands/christmas';
+import { pokemonCommand } from '../commands/pokemon';
+import { checkPokemonCommand } from '../commands/check-pokemon';
 
 export const commands = [
   benbotCommand,
   lootCommand,
+  pokemonCommand,
   lootStatusCommand,
 	giveCurrencyCommand,
 	betCurrencyCommand,
-	checkGoldCommand,
+  checkGoldCommand,
+  checkPokemonCommand,
 	leaderboardCommand,
 	shaqCommand,
 	shaqFuCommand,
@@ -47,5 +51,5 @@ export const commands = [
 	blingtronCommand,
 	justGuildyThingsCommand,
 	nsfwCommand,
-	christmasCommand
+  christmasCommand
 ];

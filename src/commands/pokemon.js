@@ -7,10 +7,14 @@ import { pokemon } from '../lib/pokemon';
 
 export class PokemonCommand extends RandomSpawnCommand {
   command = 'catch';
-  aliases = ['pokemon', 'pokeball'];
+  aliases = ['pokeball'];
   help = 'Catches a pokemon, if one has appeared. Try and catch \'em all!';
   example = '!catch';
-  
+
+  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
+  spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
+
   pokemon = [];
   pokemonExpiry = 604800000; // Refresh pokemon every week
   pokemonTimestamp = 0;
@@ -40,8 +44,12 @@ export class PokemonCommand extends RandomSpawnCommand {
     };
     
     return pokemon.catch(message.author, this.spawnedPokemon.name)
-      .then(amount => embedOptions.footer.text = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} unique Pokémon.`)
-      .then(() => this.postEmbed(embedOptions, messageText, message));
+      .then(({ caught, gold, amount }) => {
+        embedOptions.footer.text = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
+        const times = caught === 1 ? 'time' : 'times';
+        if (caught) embedOptions.description = `${message.member.displayName} has caught this pokemon ${caught} ${times} before, and was awarded ${gold} gold instead.`;
+      })
+      .then(() => this.postEmbed(embedOptions, message));
   }
   
   async spawn(message) {
@@ -51,7 +59,6 @@ export class PokemonCommand extends RandomSpawnCommand {
     const pokemonName = this.getPokemonName(this.spawnedPokemon);
     const pokemonImage = await this.getPokemonImage(this.spawnedPokemon);
     const messageText = `A wild ${pokemonName} appeared! Use the \`!catch\` command to catch it!`
-    
     return this.postFile(pokemonImage, messageText, message);
   }
   
@@ -67,7 +74,7 @@ export class PokemonCommand extends RandomSpawnCommand {
     if (this.pokemon.length && pokemonAge < this.pokemonExpiry) return this.pokemon;
     else return axios
       .get(url)
-      .then(data => this.setPokemon(data));
+      .then(({ data }) => this.setPokemon(data));
   }
   
   setPokemon(data) {
@@ -75,11 +82,12 @@ export class PokemonCommand extends RandomSpawnCommand {
     const nonSpecialPokemon = results.filter(pokemon => !pokemon.url.match(/\d{5,}\/?$/));
     this.pokemon = nonSpecialPokemon;
     this.pokemonTimestamp = Date.now();
+    return this.pokemon;
   }
   
   async getPokemonInfo(pokemon) {
     const { url } = pokemon;
-    return axios.get(url);
+    return axios.get(url).then(({ data }) => data);
   }
   
   getPokemonName(pokemon) {
@@ -99,20 +107,22 @@ export class PokemonCommand extends RandomSpawnCommand {
   async getPokemonImage(pokemon) {
     const { name } = pokemon;
     const imagePath = `${name}.gif`;
-    const url = `${pokemonImageApi}${imagePath}`;
+    const url = `${this.pokemonImageApi}${imagePath}`;
     const localImagePath = `assets/pokemon/${imagePath}`;
     const fileExists = fs.existsSync(localImagePath);
     
-    if (!fileExists) await axios({ url, responseType: 'stream' })
-      .then(response => (
-        new Promise((resolve, reject) => {
-          response.data
-            .pipe(fs.createWriteStream(localImagePath))
-            .on('finish', () => resolve())
-            .on('error', e => reject(e));
-        }))
-      );
-      
+    if (!fileExists) {
+      await axios({ url, responseType: 'stream' })
+        .then(response => (
+          new Promise((resolve, reject) => {
+            response.data
+              .pipe(fs.createWriteStream(localImagePath))
+              .on('finish', () => resolve())
+              .on('error', e => reject(e));
+          }))
+        );
+    }
+
     return localImagePath;
   }
   
@@ -133,3 +143,5 @@ export class PokemonCommand extends RandomSpawnCommand {
     "I'm not really feeling the whole \"Pokémon\" thing right now. Come back later"
   ];
 }
+
+export const pokemonCommand = new PokemonCommand();

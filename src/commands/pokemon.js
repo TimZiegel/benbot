@@ -12,8 +12,8 @@ export class PokemonCommand extends RandomSpawnCommand {
   help = 'Catches a pokemon, if one has appeared. Try and catch \'em all!';
   example = '!catch';
 
-  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
-  spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
+  spawnChance = 1//0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnDelay = 200//3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
   spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
 
   pokemon = [];
@@ -21,7 +21,9 @@ export class PokemonCommand extends RandomSpawnCommand {
   pokemonTimestamp = 0;
   pokemonApi = "https://pokeapi.co/api/v2";
   pokemonImageApi = "https://play.pokemonshowdown.com/sprites/xyani/";
-  spawnedPokemon = null;
+  pokemonSpawnImage = 'assets/pokemon.png';
+  pokemonSpawnText = 'A wild Pokémon appeared! Use the `!catch` command to catch it!';
+  pokemonMasterGold = 500;
   
   constructor() {
     super();
@@ -29,9 +31,18 @@ export class PokemonCommand extends RandomSpawnCommand {
   
   async claim(message) {
     await this.deleteSpawnMessage();
-    const pokemonName = this.getPokemonName(this.spawnedPokemon);
-    const pokemonImage = await this.getPokemonImage(this.spawnedPokemon);
-    const pokemonTypeColor = this.getPokemonTypeColor(this.spawnedPokemon);
+    await this.getPokemon();
+    
+    const caughtPokemon = await pokemon.getPokemonNames(message.author);
+    const uncaughtPokemon = this.pokemon.filter(({ name }) => !caughtPokemon.includes(name));
+    const caughtEmAll = !uncaughtPokemon.length;
+    const eligiblePokemon = caughtEmAll ? this.pokemon : uncaughtPokemon;
+
+    const randomPokemon = getRandom(eligiblePokemon);
+    const spawnedPokemon = await this.getPokemonInfo(randomPokemon);
+    const pokemonImage = await this.getPokemonImage(spawnedPokemon);
+    const pokemonName = this.getPokemonName(spawnedPokemon);
+    const pokemonTypeColor = this.getPokemonTypeColor(spawnedPokemon);
     
     const embedOptions = {
       author: {
@@ -44,31 +55,18 @@ export class PokemonCommand extends RandomSpawnCommand {
       footer: {}
     };
     
-    return pokemon.catch(message.author, this.spawnedPokemon.name)
-      .then(({ caught, amount }) => {
-        const goldValue = this.spawnedPokemon.base_experience || 100;
+    return pokemon.catch(message.author, spawnedPokemon.name)
+      .then(({ amount }) => {
+        const goldValue = caughtEmAll ? this.pokemonMasterGold : (spawnedPokemon.base_experience || 100);
         embedOptions.footer.text = `${goldValue} gold was awarded for this catch.`;
-        
-        if (caught) {
-          const times = caught === 1 ? 'time' : 'times';
-          embedOptions.description = `${message.member.displayName} has caught this Pokémon ${caught} ${times} before, and has caught has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
-        } else {
-          embedOptions.description = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} unique Pokémon.`;
-        }
-        
+        embedOptions.description = `${message.member.displayName} has caught ${amount} of ${this.pokemon.length} Pokémon.`;
         return currency.give(message.author, goldValue, 'gold');
       })
       .then(() => this.postEmbed(embedOptions, message));
   }
   
   async spawn(message) {
-    const pokemon = await this.getPokemon();
-    const randomPokemon = getRandom(pokemon);
-    this.spawnedPokemon = await this.getPokemonInfo(randomPokemon);
-    const pokemonName = this.getPokemonName(this.spawnedPokemon);
-    const pokemonImage = await this.getPokemonImage(this.spawnedPokemon);
-    const messageText = `A wild ${pokemonName} appeared! Use the \`!catch\` command to catch it!`
-    return this.postFile(pokemonImage, messageText, message);
+    return this.postFile(this.pokemonSpawnImage, this.pokemonSpawnText, message);
   }
   
   async unavailable(message) {

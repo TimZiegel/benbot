@@ -12,8 +12,8 @@ export class PokemonCommand extends RandomSpawnCommand {
   help = 'Catches a pokemon, if one has appeared. Try and catch \'em all!';
   example = '!catch';
 
-  spawnChance = 1//0.05; // Each post has a 1 in 20 chance to start the spawn timer
-  spawnDelay = 200//3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
+  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
   spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
 
   pokemon = [];

@@ -50,6 +50,7 @@ export class Command {
 
 export class RandomDataCommand extends Command {
   data = [];
+  replacements = {};
 
   constructor() {
     super();
@@ -58,7 +59,8 @@ export class RandomDataCommand extends Command {
   run(message) {
     const replacements = {
       name: message.member.displayName,
-      NAME: message.member.displayName.toUpperCase()
+      NAME: message.member.displayName.toUpperCase(),
+      ...this.replacements
     };
     const random = getRandom(this.data);
     const text = this.formatText(random, replacements);

@@ -1,13 +1,13 @@
-import { RandomDataCommand } from '../lib/command';
+import { RandomDataCommand } from "../lib/command";
 
 export class HiCommand extends RandomDataCommand {
-  command = 'hi';
-  aliases = ['hello'];
-  help = 'Says hello!';
-  example = '!hi';
+  command = "hi";
+  aliases = ["hello"];
+  help = "Says hello!";
+  example = "!hi";
 
-	data = [
-		"Oh, uhh... Hi.",
+  data = [
+    "Oh, uhh... Hi.",
     "Hello there.",
     "Greetings and salutations, my good fellow.",
     "Greetings, champion.",
@@ -23,17 +23,31 @@ export class HiCommand extends RandomDataCommand {
     "Honored, I'm sure.",
     "Good day to you.",
     "King's honor, friend.",
-    "King's honor, ${name}.",
+    "Hi ${name}!",
     "Good to see you, ${name}.",
-    "Well met, ${name}.",
     "G'day, ${name}!",
-    "Light be with you, ${name}.",
-    "Hi, ${name}.",
     "Howdy ${name}!",
-    "Hey ${name}.",
-    "Greetings, ${name}. I have been expecting you."
-	];
+    "Hey ${name}!",
+    "Hello ${name}!",
+    "Welcome, ${name}!",
+    "Greetings, ${name}.",
+    "Salutations, ${name}.",
+    "Greetings, ${name}. I have been expecting you.",
+    "Interest ya'n a pint, ${name}?",
+    "Lord Admiral's favor, ${name}!",
+    "Lok'tar ogar, ${name}.",
+    "King's honor, ${name}.",
+    "Well met, ${name}.",
+    "Light be with you, ${name}."
+  ];
 
+  getData(message) {
+    const { mentions } = message;
+    if (mentions.members && mentions.members.size) {
+      return this.data.filter(data => data.match(/\$\{name\}/i));
+    }
+  }
+  
   constructor() {
     super();
   }

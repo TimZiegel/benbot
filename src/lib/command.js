@@ -50,19 +50,30 @@ export class Command {
 
 export class RandomDataCommand extends Command {
   data = [];
-  replacements = {};
 
   constructor() {
     super();
   }
 
+  // Custom replacements: return an object of key/value pairs
+  getReplacements(message) {}
+  
+  // Custom data: return a subset of data, if applicable
+  getData(message) {}
+  
   run(message) {
-    const replacements = {
-      name: message.member.displayName,
-      NAME: message.member.displayName.toUpperCase(),
-      ...this.replacements
-    };
-    const random = getRandom(this.data);
+    const { mentions } = message;
+    const hasMentions = mentions.members && mentions.members.size;
+    
+    const author = message.member.displayName;
+    const name = hasMentions ? mentions.members.first().displayName : author;
+    
+    const customReplacements = this.getReplacements(message) || {};
+    const replacements = { name, author, ...customReplacements };
+    Object.entries(replacements).forEach(([key, value]) => replacements[key.toUpperCase()] = value.toUpperCase());
+    
+    const data = this.getData(message) || this.data;
+    const random = getRandom(data);
     const text = this.formatText(random, replacements);
     this.post(text, message);
   }

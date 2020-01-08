@@ -78,14 +78,7 @@ export class BetCurrencyCommand extends Command {
   async run(message) {
     const user = message.author;
     const betsThisPeriod = await this.getBetsThisPeriod(user);
-    if (betsThisPeriod.size > this.betsPerPeriod) {
-      const hours = Math.ceil(this.eligibilityPeriod / 3600000);
-      const now = timestamp();
-      const earliestBet = betsThisPeriod[0].data().timestamp;
-      const timeUntilNext = now - earliestBet + this.eligibilityPeriod;
-      const nextAvailableMessage = dayjs(now).to(dayjs(timeUntilNext));
-      return this.post(`You've reached your limit for today! You can only bet ${this.betsPerPeriod} times every ${hours} hours. Your next bet will be available ${nextAvailableMessage}.`);
-    }
+    if (betsThisPeriod.size >= this.betsPerPeriod) return this.ineligible(betsThisPeriod, message);
     
     const { type, color } = defaultCurrency;
     const amountString = message.content.match(/\s\d+\b/i);
@@ -176,6 +169,15 @@ export class BetCurrencyCommand extends Command {
   async logBet(user, roll) {
     const userId = users.getId(user);
     return db.add('bets', { userId, roll });
+  }
+  
+  async ineligible(betsThisPeriod, message) {
+    const hours = Math.ceil(this.eligibilityPeriod / 3600000);
+    const now = timestamp();
+    const earliestBet = betsThisPeriod[0].data().timestamp;
+    const timeUntilNext = now - earliestBet + this.eligibilityPeriod;
+    const nextAvailableMessage = dayjs(now).to(dayjs(timeUntilNext));
+    return this.post(`You've reached your limit! You can only bet ${this.betsPerPeriod} times every ${hours} hours. Your next bet will be available ${nextAvailableMessage}.`, message);
   }
 }
 

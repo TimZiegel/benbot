@@ -12,7 +12,7 @@
     "gcp-build": "npm run build",
     "gcp-account": "gcloud auth login timothy.ziegel@gmail.com",
     "gcp-project": "gcloud config set project carbide-legend-238019",
-    "gcp-deploy": "gcloud app deploy",
+    "gcp-deploy": "gcloud app deploy --version v1",
     "gcp-config": "npm run gcp-account && npm run gcp-project",
     "deploy": "npm run gcp-config && npm run gcp-deploy",
     "publish": "npm run deploy"

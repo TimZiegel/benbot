@@ -13,7 +13,7 @@ dayjs.extend(RelativeTime);
 export class BetCurrencyCommand extends Command {
   command = 'bet';
   aliases = ['roll'];
-  help = 'Bet some gold and roll the die! Rolling 50+ yields 1.5x gold. Rolling 75+ yields 2x gold. Rolling 90+ yields 3x. Rolling 100 yields 5x.';
+  help = 'Bet some gold and roll the die! Rolling 50+ yields 1.5x gold. Rolling 80+ yields 2x gold. Rolling 90+ yields 3x. Rolling 100 yields 5x.';
   example = '!bet 10';
   eligibilityPeriod = 86400000; // One day in ms
   betsPerPeriod = 15; // Max bids per period
@@ -125,7 +125,7 @@ export class BetCurrencyCommand extends Command {
       multiplier = 3;
       winnings = Math.floor(amount * multiplier);
       title = madlibs(getRandom(this.data.crazy), replacements);
-    } else if (roll >= 75) {
+    } else if (roll >= 80) {
       multiplier = 2;
       winnings = Math.floor(amount * multiplier);
       title = madlibs(getRandom(this.data.lucky), replacements);

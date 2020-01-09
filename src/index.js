@@ -13,7 +13,6 @@ const onMessage = message => {
   if (message.author.bot) return;
   const command = commands.find(cmd => cmd && cmd.check(message));
   if (command) command.run(message);
-  if (!command || !(command instanceof LootCommand)) lootCommand.checkForLoot(message);
   if (!command || !(command instanceof RandomSpawnCommand)) {
     commands
       .filter(command => command instanceof RandomSpawnCommand)

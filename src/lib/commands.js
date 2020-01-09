@@ -1,7 +1,6 @@
 import { benbotCommand } from "../commands/benbot";
 import { lootCommand } from "../commands/loot";
 import { pokemonCommand } from "../commands/pokemon";
-import { lootStatusCommand } from "../commands/loot-status";
 import { spawnStatusCommand } from "../commands/spawn-status";
 import { giveCurrencyCommand } from "../commands/give-currency";
 import { betCurrencyCommand } from "../commands/bet-currency";
@@ -30,7 +29,6 @@ export const commands = [
   benbotCommand,
   lootCommand,
   pokemonCommand,
-  lootStatusCommand,
   spawnStatusCommand,
   giveCurrencyCommand,
   betCurrencyCommand,

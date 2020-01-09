@@ -1,97 +1,41 @@
 import madlibs from 'mad-libber';
-import { Command } from '../lib/command';
+import { Command, RandomSpawnCommand } from '../lib/command';
 import { currency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, isTestServer, isTestBot, humanize } from '../lib/utils';
 import { colors } from '../lib/colors';
 
-export const lootStatus = {
-  NONE: 'none',
-  PENDING: 'pending',
-  ACTIVE: 'active',
-  CLAIMED: 'claimed'
-};
-
-export class LootCommand extends Command {
+export class LootCommand extends RandomSpawnCommand {
   command = 'loot';
   help = 'Loots an item if a chest has spawned. This earns gold.';
   example = '!loot';
   
-  lootChance = .05; // Each post has a 1 in 20 chance to start the loot timer
-  lootDelay = 3600000; // When loot is triggered to spawn, delay it for a random time between 0ms and 1 hour
-  lootExpiry = 3600000; // If loot is triggered and no one has claimed it within 1 hour, it can be deleted
-  lootImage = 'assets/loot.jpg';
-  lootStatus = lootStatus.NONE;
-  lootMessage = null;
-  lootTimer = null;
-  lootTimestamp = 0;
+  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
+  spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
+  
+  lootSpawnImage = 'assets/loot.jpg';
   lootSpawnText = 'A wild chest appears! Use the `!loot` command to claim it!';
+  lootMinBaseValue = 10;
+  lootMaxBaseValue = 50;
+  lootMaxLevel = 0;
+  lootMaxValue = 0;
   
   constructor() {
-		super();
-	}
-
-  checkForLoot(message) {
-    if (!isTestBot() && isTestServer(message.guild)) return;
-    const random = Math.random();
-    if (this.lootStatus === lootStatus.NONE && random < this.lootChance) this.startLootTimer(message);
-    else this.checkLootMessageExpiry();
+    super();
+    this.lootMaxLevel = this.rarities.reduce((acc, curr) => curr.level > acc ? curr.level : acc, 0);
+    this.lootMaxValue = this.lootMaxBaseValue * this.lootMaxLevel;
   }
-
-  startLootTimer(message) {
-    this.lootStatus = lootStatus.PENDING;
-    const delay = getRandomNumberBetween(0, this.lootDelay);
-    this.lootTimestamp = Date.now() + delay;
-    this.lootTimer = setTimeout(() => this.postLootMessage(message), delay);
-  }
-
-  postLootMessage(message) {
-    return this.postFile(this.lootImage, this.lootSpawnText, message)
-      .then(message => this.setLootMessage(message))
-      .catch(e => this.setLootMessage(null));
-  }
-
-  setLootMessage(message = null) {
-    clearTimeout(this.lootTimer);
-    this.lootTimer = null;
+  
+  async claim(message) {
+    await this.deleteSpawnMessage();
     
-    if (message) {
-      this.lootMessage = message;
-      this.lootStatus = lootStatus.ACTIVE;
-    } else {
-      this.lootMessage = null;
-      this.lootStatus = lootStatus.NONE;
-    }
-  }
-
-  hasLootMessage() {
-    return this.lootStatus === lootStatus.ACTIVE && !!this.lootMessage;
-  }
-
-  checkLootMessageExpiry() {
-    if (!this.hasLootMessage()) return;
-    const now = Date.now();
-    const timestamp = this.lootMessage.createdTimestamp;
-    const lootAge = now - timestamp;
-    if (lootAge > this.lootExpiry) {
-      this.lootMessage.delete()
-        .then(() => this.setLootMessage(null))
-        .catch(() => this.setLootMessage(null));
-    }
-  }
-
-  run(message) {
-    if (this.lootStatus === lootStatus.CLAIMED) return;
-    if (!this.hasLootMessage()) {
-      const lootUnavailableText = getRandom(this.lootUnavailableTexts);
-      return this.post(lootUnavailableText, message);
-    }
-    this.lootStatus = lootStatus.CLAIMED;
     const random = Math.random();
     const rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
     const data = getRandom(this.data);
     const loot = this.getItemName(data, rarity);
     const goldValue = this.getGoldValue(loot, rarity);
     const goldMessage = this.getGoldValueMessage(goldValue);
+    
     const embedOptions = {
       author: {
         name: `${message.member.displayName} receives ${rarity.name} loot:`,
@@ -104,15 +48,17 @@ export class LootCommand extends Command {
       }
     };
 
-    this.lootMessage.delete()
-      .then(() => currency.give(message.author, goldValue, 'gold'))
-      .then(() => this.postEmbed(embedOptions, message))
-      .then(() => this.setLootMessage(null))
-      .catch(e => {
-        this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
-        this.setLootMessage(null);
-        console.error(e);
-      });
+    return currency.give(message.author, goldValue, 'gold')
+      .then(() => this.postEmbed(embedOptions, message));
+  }
+
+  async spawn(message) {
+    return this.postFile(this.lootSpawnImage, this.lootSpawnText, message);
+  }
+  
+  async unavailable(message) {
+    const unavailableText = getRandom(this.unavailableTexts);
+    return this.post(unavailableText, message);
   }
   
   getItemName(data, rarity) {
@@ -123,30 +69,33 @@ export class LootCommand extends Command {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
-  getGoldValueMessage(value = 0) {
-    if (value > 150) return `Jackpot! This item sold on the auction house for ${humanize(value)}g.`;
-    else if (value > 80) return `Score! A buyer in trade chat bought this item for ${humanize(value)}g.`;
-    else if (value < 10) return `Oops. You accidentally posted this item on the auction house for way below market value. ${humanize(value)}g is better than nothing, right?`;
-    else return `This item was sold to a vendor for ${humanize(value)}g.`;
+  getGoldValueMessage(goldValue = 0) {
+    const value = humanize(goldValue);
+    const highValueThreshold = this.lootMaxValue * 0.8;
+    const mediumValueThreshold = this.lootMaxValue * 0.5;
+    
+    if (goldValue > this.lootMaxValue) return `Unbelievable! A collector bought this item for ${value}g!`;
+    if (goldValue > highValueThreshold) return `Jackpot! This item sold on the auction house for ${value}g.`;
+    if (goldValue > mediumValueThreshold) return `Score! A buyer in trade chat bought this item for ${value}g.`;
+    if (goldValue < this.lootMinBaseValue) return `Oops. You accidentally posted this item on the auction house for way below market value. ${value}g is better than nothing, right?`;
+    return `This item was sold to a vendor for ${value}g.`;
   }
   
   getGoldValue(name = '', rarity) {
-    const random = Math.random();
-    if (random > .9 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(100, 200) + rarity.value);
-    else if (random > .85) return this.formatGoldValue(getRandomNumberBetween(50, 100) + rarity.value);
-    else if (random < .02 && rarity.level > 1) return this.formatGoldValue(getRandomNumberBetween(1, 5));
-    else {
-      let value = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
-      value = (value % 25) + 10 + rarity.value;
-      return this.formatGoldValue(value);
-    };
-  }
-  
-  formatGoldValue(value = 0) {
-    return Math.ceil(value);
+    const random = getRandomNumberBetween(1, 100);
+    
+    if (random > 98 && rarity.level > 1) return getRandomNumberBetween(this.lootMaxValue, this.lootMaxValue + this.lootMaxBaseValue);
+    if (random < 2 && rarity.level > 1) return getRandomNumberBetween(1, this.lootMinBaseValue - 1);
+    if (random >= 45 && random <= 55) return getRandomNumberBetween(1, this.lootMaxValue);
+
+    const nameValue = name.split('').map(char => char.charCodeAt(0)).reduce((acc, curr) => acc + curr);
+    const baseValue = (nameValue % (this.lootMaxBaseValue - this.lootMinBaseValue + 1)) + this.lootMinBaseValue;
+    const baseRarityValue = this.lootMaxBaseValue * (rarity.level - 1);
+    const value = baseRarityValue + baseValue;
+    return value;
   }
 
-  lootUnavailableTexts = [
+  unavailableTexts = [
     "Whoops! There is no loot available.",
     "What do I look like, a charity?",
     "Man, I just handed out loot like, a while ago.",
@@ -172,35 +121,30 @@ export class LootCommand extends Command {
       name: 'legendary',
       level: 5,
       chance: .1,
-      value: 60,
       color: colors.legendary
     },
     {
       name: 'epic',
       level: 4,
-      chance: .3,
-      value: 30,
+      chance: .35,
       color: colors.epic
     },
     {
       name: 'rare',
       level: 3,
-      chance: .5,
-      value: 20,
+      chance: .6,
       color: colors.rare
     },
     {
       name: 'uncommon',
       level: 2,
-      chance: .75,
-      value: 10,
+      chance: .8,
       color: colors.uncommon
     },
     {
       name: 'common',
       level: 1,
       chance: 1,
-      value: 0,
       color: colors.common
     }
   ];

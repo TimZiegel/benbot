@@ -1,6 +1,7 @@
 export const colors = {
   red: 0xEB2A20,
   gold: 0xFFD435,
+  lightGray: 0xDFE4EA,
   heirloom: 0x00CCFF,
   artifact: 0xE6CC80,
   legendary: 0xFF8000,

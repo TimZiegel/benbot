@@ -1,14 +1,11 @@
 import madlibs from 'mad-libber';
-import dayjs from 'dayjs';
-import RelativeTime from 'dayjs/plugin/relativeTime';
+import parsems from 'parse-ms';
 import { Command } from '../lib/command';
 import { currency, defaultCurrency } from '../lib/currency';
 import { getRandom, getRandomNumberBetween, humanize } from '../lib/utils';
 import { colors } from '../lib/colors';
 import { users } from '../lib/users';
 import { db, timestamp } from '../lib/database';
-
-dayjs.extend(RelativeTime);
 
 export class BetCurrencyCommand extends Command {
   command = 'bet';
@@ -78,7 +75,8 @@ export class BetCurrencyCommand extends Command {
   async run(message) {
     const user = message.author;
     const betsThisPeriod = await this.getBetsThisPeriod(user);
-    if (betsThisPeriod.size >= this.betsPerPeriod) return this.ineligible(betsThisPeriod, message);
+    const betsLeftThisPeriod = Math.max(this.betsPerPeriod - betsThisPeriod.size, 0);
+    if (!betsLeftThisPeriod) return this.ineligible(betsThisPeriod, message);
     
     const { type, color } = defaultCurrency;
     const amountString = message.content.match(/\s\d+\b/i);
@@ -92,12 +90,13 @@ export class BetCurrencyCommand extends Command {
     
     const result = this.roll(amount, type);
     const amountLeft = currentAmount - amount + result.winnings;
-    
+    const pluralBets = (betsLeftThisPeriod - 1) === 1 ? 'bet' : 'bets';
+
     const embedOptions = {
       color: result.won ? color : colors.red,
       title: result.title,
       footer: {
-        text: `${result.message} You have ${humanize(amountLeft)} ${type} left.`
+        text: `${result.message} You have ${humanize(amountLeft)} ${type} and ${betsLeftThisPeriod - 1} ${pluralBets} left.`
       }
     };
     
@@ -172,12 +171,48 @@ export class BetCurrencyCommand extends Command {
   }
   
   async ineligible(betsThisPeriod, message) {
-    const hours = Math.ceil(this.eligibilityPeriod / 3600000);
     const now = timestamp();
     const earliestBet = betsThisPeriod.docs[0].data().timestamp;
-    const timeUntilNext = now - earliestBet + this.eligibilityPeriod;
-    const nextAvailableMessage = dayjs(now).to(dayjs(timeUntilNext));
-    return this.post(`You've reached your limit! You can only bet ${this.betsPerPeriod} times every ${hours} hours. Your next bet will be available ${nextAvailableMessage}.`, message);
+    const timeUntilNext = Math.max((earliestBet + (this.eligibilityPeriod / 2)) - now, 0);
+
+    const timeString = this.parseTime(timeUntilNext);
+    const hours = Math.ceil(this.eligibilityPeriod / 3600000);
+    const pluralTimes = this.betsPerPeriod === 1 ? 'time' : 'times';
+
+    const embedOptions = {
+      color: colors.lightGray,
+      title: `You've reached your limit! You can only bet ${this.betsPerPeriod} ${pluralTimes} every ${hours} hours.`,
+      footer: {
+        text: `Your next bet will be available in ${timeString}.`
+      }
+    };
+
+    return this.postEmbed(embedOptions, message);
+  }
+
+  parseTime(time = 0) {
+    const absoluteTime = Math.max(time, 1000);
+    const parsedTime = parsems(absoluteTime);
+
+    const timeSegments = ['days', 'hours'];
+    if (!parsedTime.days) {
+      if (parsedTime.hours < 2) timeSegments.push('minutes');
+      else if (parsedTime.minutes) parsedTime.hours += 1;
+      if (parsedTime.hours < 1) timeSegments.push('seconds');
+    }
+
+    return Object.entries(parsedTime)
+      .filter(([key]) => timeSegments.includes(key))
+      .filter(([key, value]) => value)
+      .map(([key, value]) => {
+        if (value === 1) key = key.replace(/s$/i, '');
+        return `${value} ${key}`;
+      })
+      .reduce((acc, curr, i, src) => {
+        const last = i >= src.length - 1;
+        const conjunction = last ? ' and ' : ', ';
+        return acc + conjunction + curr;
+      });
   }
 }
 

@@ -16,7 +16,7 @@ export class BetCurrencyCommand extends Command {
   help = 'Bet some gold and roll the die! Rolling 50+ yields 1.5x gold. Rolling 80+ yields 2x gold. Rolling 90+ yields 3x. Rolling 100 yields 5x.';
   example = '!bet 10';
   eligibilityPeriod = 86400000; // One day in ms
-  betsPerPeriod = 15; // Max bids per period
+  betsPerPeriod = 10; // Max bids per period
   
   data = {
     unlucky: [
@@ -174,7 +174,7 @@ export class BetCurrencyCommand extends Command {
   async ineligible(betsThisPeriod, message) {
     const hours = Math.ceil(this.eligibilityPeriod / 3600000);
     const now = timestamp();
-    const earliestBet = betsThisPeriod[0].data().timestamp;
+    const earliestBet = betsThisPeriod.docs[0].data().timestamp;
     const timeUntilNext = now - earliestBet + this.eligibilityPeriod;
     const nextAvailableMessage = dayjs(now).to(dayjs(timeUntilNext));
     return this.post(`You've reached your limit! You can only bet ${this.betsPerPeriod} times every ${hours} hours. Your next bet will be available ${nextAvailableMessage}.`, message);

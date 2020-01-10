@@ -53,11 +53,11 @@ export class Database {
     return database.collection(id);
   }
 
-  orderBy(table, order, direction = "asc") {
+  orderBy(table, order, direction = "desc") {
     return this.table(table).orderBy(order, direction);
   }
 
-  orderBy$(order, direction = "asc") {
+  orderBy$(order, direction = "desc") {
     return query => query.orderBy(order, direction);
   }
 

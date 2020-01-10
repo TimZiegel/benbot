@@ -75,7 +75,7 @@ export class BetCurrencyCommand extends Command {
   async run(message) {
     const user = message.author;
     const betsThisPeriod = await this.getBetsThisPeriod(user);
-    const betsLeftThisPeriod = Math.max(this.betsPerPeriod - betsThisPeriod.size, 0);
+    const betsLeftThisPeriod = Math.max(this.betsPerPeriod - betsThisPeriod.length, 0);
     if (!betsLeftThisPeriod) return this.ineligible(betsThisPeriod, message);
     
     const { type, color } = defaultCurrency;
@@ -156,13 +156,19 @@ export class BetCurrencyCommand extends Command {
   async getBetsThisPeriod(user) {
     const userId = users.getId(user);
     const periodStart = timestamp() - this.eligibilityPeriod;
+    
     const query = db.pipe(
       db.table('bets'),
       db.where$('userId', '==', userId),
-      db.orderBy$('timestamp'),
-      db.startAt$(periodStart)
+      db.where$('timestamp', '>', periodStart)
     );
-    return query.get();
+    
+    const snapshot = await query.get();
+    const bets = snapshot.docs || [];
+    
+    return bets.map(bet => bet.data())
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .slice(-this.betsPerPeriod);
   }
   
   async logBet(user, roll) {
@@ -172,8 +178,8 @@ export class BetCurrencyCommand extends Command {
   
   async ineligible(betsThisPeriod, message) {
     const now = timestamp();
-    const earliestBet = betsThisPeriod.docs[0].data().timestamp;
-    const timeUntilNext = Math.max((earliestBet + (this.eligibilityPeriod / 2)) - now, 0);
+    const earliestBet = betsThisPeriod[0].timestamp;
+    const timeUntilNext = (earliestBet + this.eligibilityPeriod) - now;
 
     const timeString = this.parseTime(timeUntilNext);
     const hours = Math.ceil(this.eligibilityPeriod / 3600000);

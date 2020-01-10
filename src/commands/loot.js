@@ -224,11 +224,14 @@ export class LootCommand extends RandomSpawnCommand {
       ],
       source: [
         'fate',
+        'destiny',
         'the ravager',
         'the dark lord',
         'the forgotten king',
+        'the forgotten hero',
         'the nameless king',
         'the faceless one',
+        'the wartorn hero',
         'entwined destinies',
         'endless hunger',
         'endless war',
@@ -237,8 +240,7 @@ export class LootCommand extends RandomSpawnCommand {
         'dark visions',
         'apocryphal fears',
         'the nightmare',
-        'unending nightmares',
-        'destiny'
+        'unending nightmares'
       ]
     },
     {
@@ -341,7 +343,8 @@ export class LootCommand extends RandomSpawnCommand {
         'tribal unities',
         'unity',
         'fel rituals',
-        'strength'
+        'strength',
+        'the forgotten chieftan'
       ]
     },
     {
@@ -393,7 +396,8 @@ export class LootCommand extends RandomSpawnCommand {
         'reflecting prism',
         'scythe',
         'greatscythe',
-        'crescent'
+        'crescent',
+        'conch'
       ],
       source: [
         'the waning moon',
@@ -421,7 +425,9 @@ export class LootCommand extends RandomSpawnCommand {
         'titanic ruin',
         'stars',
         'infinite possibilities',
-        'unending torment'
+        'unending torment',
+        'origination',
+        'divination'
       ]
     },
     {
@@ -604,7 +610,9 @@ export class LootCommand extends RandomSpawnCommand {
         'the eternal lich',
         'servitude',
         'damnation',
-        'Kel\'thuzad'
+        'Kel\'thuzad',
+        'the Necrolords',
+        'Maldraxxus'
       ]
     },
     {
@@ -685,7 +693,10 @@ export class LootCommand extends RandomSpawnCommand {
         'rebirth',
         'the Naaru',
         'the highlord',
-        'the high kings'
+        'the high kings',
+        'the righteous',
+        'the unwavering hero',
+        'the stalwart hero'
       ]
     },
     {
@@ -814,8 +825,12 @@ export class LootCommand extends RandomSpawnCommand {
         'the black anvil',
         'unstoppable magma',
         'the diamond king',
+        'earthen kings',
         'endless caverns',
-        'the echoing halls'
+        'the echoing halls',
+        'the devoted',
+        'the mad king',
+        'the underlords'
       ]
     },
     {
@@ -892,6 +907,8 @@ export class LootCommand extends RandomSpawnCommand {
         'the Amani',
         'the Drakkari',
         'Gundrak',
+        'the jungle',
+        'Stranglethorn Vale',
         'Zul\'gurub',
         'the unified tribes',
         'the tribes',
@@ -928,12 +945,15 @@ export class LootCommand extends RandomSpawnCommand {
         'The black ',
         'Slithering ',
         'Wriggling ',
+        'Writhing ',
         'C\'thraxi ',
         'Quivering ',
+        'Twitching ',
         'Phantasmal ',
         'Spectral ',
         'Horrifying ',
-        'Maddening '
+        'Maddening ',
+        'Pulsing '
       ],
       suffix: [
         'star',
@@ -949,7 +969,12 @@ export class LootCommand extends RandomSpawnCommand {
         'claw',
         'tendril',
         'horror',
-        'terror'
+        'terror',
+        'maw',
+        'vein',
+        'annihilator',
+        'disintigrator',
+        'decimator'
       ],
       type: [
         'dagger',
@@ -990,7 +1015,18 @@ export class LootCommand extends RandomSpawnCommand {
         'the all-seeing eye',
         'the eight-eyed goat',
         'the hidden watcher',
-        'the drowned'
+        'the drowned',
+        'the dark inquisitor',
+        'the secret keepers',
+        'the many-eyed servant',
+        'the restless cabal',
+        'the dark brotherhood',
+        'the harbingers',
+        'the slumbering one',
+        'the awakened ones',
+        'the dark harbinger',
+        'the unknowable',
+        'the deep one'
       ]
     }, {
       id: 'Tauren',
@@ -1170,7 +1206,10 @@ export class LootCommand extends RandomSpawnCommand {
         'Thermally insulated double walled steam ',
         'Visionary futureproof electro-',
         'Deployable tactical emergency ',
-        'Tactile coin-operated kitten '
+        'Tactile coin-operated kitten ',
+        'Tactical enforecement ultra-',
+        'Malfunctioning split-wire ',
+        'Sputtering dual-chamber radial '
       ],
       suffix: [
         'compiler',
@@ -1237,10 +1276,11 @@ export class LootCommand extends RandomSpawnCommand {
         'unlimited potential',
         'endless posibilities',
         'the arcforged',
-        'express convenience'
+        'express convenience',
+        'boundless inginuity',
+        'unknown origin'
       ]
-    },
-    {
+    }, {
       id: "Mage",
       prefix: [
         "Ebon",
@@ -1329,7 +1369,78 @@ export class LootCommand extends RandomSpawnCommand {
         "internal conflict",
         "overflowing power",
         "overwhelming power",
-        "absolute desctruction"
+        "absolute destruction"
+      ]
+    }, {
+      id: "Kyrian",
+      prefix: [
+        "Guiding ",
+        "Resolute ",
+        "Valorous ",
+        "Safety's ",
+        "Safekeeper's ",
+        "Keeper's ",
+        "Guarding ",
+        "Shielding ",
+        "Shieldmaiden's ",
+        "Defender's ",
+        "Angelic "
+      ],
+      suffix: [
+        "wing",
+        "light",
+        "spirit",
+        "call",
+        "decree",
+        "edict",
+        "law",
+        "rule",
+        "comfort",
+        "rest",
+        "protection",
+        "bulwark",
+        "charge",
+        "resolution",
+        "flame",
+        "essence",
+        "voice",
+        "soul"
+      ],
+      type: [
+        "staff",
+        "greatstaff",
+        "battlestaff",
+        "stave",
+        "sword",
+        "tome",
+        "ancient tome",
+        "arcane orb",
+        "shield",
+        "buckler",
+        "rondel",
+        "targe",
+        "dirge"
+      ],
+      source: [
+        "Bastion",
+        "Oribos",
+        "the Kyrian",
+        "the Arbiter",
+        "the Dark Arbiter",
+        "heaven",
+        "heaven's fall",
+        "desperation",
+        "hope",
+        "the hopeful",
+        "the stalwart",
+        "the Angels",
+        "the Seraphim",
+        "the watchful",
+        "the faithful",
+        "the unmoved",
+        "the unshakeable",
+        "the unerring",
+        "the unwavering"
       ]
     }
   ];

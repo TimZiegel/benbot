@@ -1,0 +1,6 @@
+- Next bet roll starts at 30
+- Next pokemon catch awards double gold
+- Your next loot will is guaranteed to be legendary
+- Immediately awarded a pokemon
+- Random gold reward
+- Nothing

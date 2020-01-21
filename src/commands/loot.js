@@ -30,7 +30,11 @@ export class LootCommand extends RandomSpawnCommand {
     await this.deleteSpawnMessage();
     
     const random = Math.random();
-    const rarity = this.rarities.find(({ chance }) => chance > random) || getRandom(this.rarities);
+    let rarity = this.rarities
+      .sort((a, b) => a.chance > b.chance ? 1 : -1)
+      .find(({ chance }) => chance > random);
+    if (!rarity) rarity = getRandom(this.rarities);
+    
     const data = getRandom(this.data);
     const loot = this.getItemName(data, rarity);
     const goldValue = this.getGoldValue(loot, rarity);
@@ -62,10 +66,16 @@ export class LootCommand extends RandomSpawnCommand {
   }
   
   getItemName(data, rarity) {
-    let name = '${type}';
-    if (rarity.level >= 3) name = '${prefix}${suffix}, ${type} of ${source}';
-    else if (rarity.level === 2) name = '${type} of ${source}';
-    name = madlibs(name, data);
+    const namingSchemes = data.namingSchemes || this.namingSchemes;
+        
+    const closestRarity = this.rarities
+      .sort((a, b) => a.level - b.level)
+      .reduce((acc, curr) => (
+        rarity.level >= curr.level && curr.level >= acc.level && namingSchemes[curr.name] ? curr : acc
+      ));
+    
+    const namingScheme = namingSchemes[closestRarity.name] || '${type}';
+    const name = madlibs(namingScheme, data);
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
@@ -148,6 +158,12 @@ export class LootCommand extends RandomSpawnCommand {
       color: colors.common
     }
   ];
+  
+  namingSchemes = {
+    'common': '${type}',
+    'uncommon': '${type} of ${source}',
+    'rare': '${prefix}${suffix}, ${type} of ${source}'
+  };
 
   data = [
     {
@@ -1450,6 +1466,95 @@ export class LootCommand extends RandomSpawnCommand {
         "the unerring",
         "the unwavering"
       ]
+    }, {
+      id: "Brewfest",
+      prefix: [
+        "Brewfest",
+        "Ironforge",
+        "Aerie Peak",
+        "Wildhammer",
+        "Grim Guzzler",
+        "Barleybeard",
+        "Kharanos",
+        "Dalaran",
+        "Dark Iron",
+        "Nethergarde",
+        "Stormstout",
+        "Boralus",
+        "Steamwheedle",
+        "Darkmoon",
+        "Dun Morogh",
+        "Rustbolt",
+        "Thunder Bluff",
+        "Razor Hill",
+        "Barrens",
+        "Undercity",
+        "Stormwind",
+        "Halfhill",
+        "Krasarang",
+        "Crossroads",
+        "Tel'abim",
+        "Zandalari",
+        "Dwarven",
+        "Gnomish",
+        "Vulperan",
+        "Orcish",
+        "Darkspear",
+        "Lunarfall",
+        "Goldshire"
+      ],
+      suffix: [
+        "bitter",
+        "seasoned",
+        "malted",
+        "chocolate",
+        "pumpkin",
+        "spiced",
+        "mulled",
+        "dark",
+        "imperial",
+        "sweet",
+        "extra dry",
+        "aged",
+        "fortified",
+        "cask aged",
+        "artisanal",
+        "craft",
+        "small batch",
+        "fermented",
+        "sour",
+        "half-sour",
+        "filtered",
+        "golden",
+        "extra-strong",
+        "honey",
+        "unfiltered",
+        "non-alcoholic"
+      ],
+      type: [
+        "ale",
+        "pale ale",
+        "stout ale",
+        "doppelbock",
+        "lager",
+        "pilsner",
+        "firewine",
+        "porter",
+        "blonde ale",
+        "cream ale",
+        "cider",
+        "wheat beer",
+        "grog",
+        "moonshine",
+        "mead"
+      ],
+      namingSchemes: {
+        'common': 'Mug of ${prefix} ${type}',
+        'uncommon': 'Flask of ${prefix} ${type}',
+        'rare': 'Tankard of ${prefix} ${suffix} ${type}',
+        'epic': 'Flagon of ${prefix} ${suffix} ${type}',
+        'legendary': 'Barrel of ${prefix} ${suffix} ${type}'
+      }
     }
   ];
   

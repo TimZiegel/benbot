@@ -1408,7 +1408,8 @@ export class LootCommand extends RandomSpawnCommand {
         "Shielding ",
         "Shieldmaiden's ",
         "Defender's ",
-        "Angelic "
+        "Angelic ",
+        "Devout "
       ],
       suffix: [
         "wing",
@@ -1420,7 +1421,6 @@ export class LootCommand extends RandomSpawnCommand {
         "law",
         "rule",
         "comfort",
-        "rest",
         "protection",
         "bulwark",
         "charge",
@@ -1428,7 +1428,9 @@ export class LootCommand extends RandomSpawnCommand {
         "flame",
         "essence",
         "voice",
-        "soul"
+        "soul",
+        "heart",
+        "divinity"
       ],
       type: [
         "staff",

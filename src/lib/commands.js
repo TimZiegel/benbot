@@ -17,6 +17,7 @@ import { corgiCommand } from "../commands/corgi";
 import { huskyCommand } from "../commands/husky";
 import { germanShepherdCommand } from "../commands/german-shepherd";
 import { hiCommand } from "../commands/hi";
+import { jokeCommand } from "../commands/joke";
 import { foodCommand } from "../commands/food";
 import { drinkCommand } from "../commands/drink";
 import { roarCommand } from "../commands/roar";
@@ -45,6 +46,7 @@ export const commands = [
   huskyCommand,
   germanShepherdCommand,
   hiCommand,
+  jokeCommand,
   foodCommand,
   drinkCommand,
   roarCommand,

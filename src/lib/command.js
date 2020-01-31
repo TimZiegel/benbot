@@ -5,7 +5,8 @@ import {
   getRandomNumberBetween,
   isImageUrl,
   isTestBot,
-  isTestServer
+  isTestServer,
+  randomize
 } from "./utils";
 import { postMessage, postFile, postEmbed } from "./bot";
 
@@ -89,32 +90,59 @@ export class RandomDataCommand extends Command {
 export class SubredditImageCommand extends Command {
   subreddit = "";
   type = "top";
+  cache = []; // Cached posts from the subreddit
+  cacheExpiry = 900000; // 15 minutes in ms
+  cacheTimestamp = 0;
+  cacheIndex = 0;
 
   constructor() {
     super();
   }
 
-  run(message) {
-    const url = `https://www.reddit.com/r/${this.subreddit}/${this.type}.json`;
-    axios
-      .get(url)
-      .then(({ data }) => this.postRandomImage(data, message))
-      .catch(e => console.error(`Could not get reddit data for ${url}: ${e}`));
+  async run(message) {
+    const posts = await this.getPosts();
+    if (!posts.length) return this.post("Sorry, I couldn't find any images to post.");
+    
+    this.cacheIndex = (this.cacheIndex + 1) % posts.length;
+    const { title, url } = this.posts[this.cacheIndex];
+    this.post(`${title} ${url}`, message);
+  }
+  
+  async getPosts() {
+    this.checkExpiry();
+    
+    if (!this.cache.length) {
+      const url = `https://www.reddit.com/r/${this.subreddit}/${this.type}.json`;
+      this.cacheTimestamp = Date.now();
+      this.cacheIndex = 0;
+      
+      try {
+        this.cache = await axios
+          .get(url)
+          .then(({ data }) => data)
+          .then(({ data }) => data.children.map(({ data }) => data))
+          .then(posts => posts.filter(data => data.title && data.url && isImageUrl(data.url)))
+          .then(posts => randomize(posts));
+      } catch (e) {
+        console.error(`Could not get reddit data for ${url}: ${e}`);
+        this.cache = [];
+      }
+    }
+    
+    return this.cache;
+  }
+  
+  checkExpiry() {
+    const now = Date.now();
+    const timestamp = this.cacheTimestamp;
+    const cacheAge = now - timestamp;
+    if (cacheAge > this.cacheExpiry) this.expire();
   }
 
-  postRandomImage(result, message) {
-    const posts = result.data.children
-      .map(({ data }) => data)
-      .filter(data => data.title && data.url)
-      .filter(({ url }) => isImageUrl(url));
-
-    let text = "";
-    if (posts.length) {
-      const { title, url } = getRandom(posts);
-      text = `${title} ${url}`;
-    }
-
-    this.post(text, message);
+  expire() {
+    this.cache = [];
+    this.cacheTimestamp = 0;
+    this.cacheIndex = 0;
   }
 }
 

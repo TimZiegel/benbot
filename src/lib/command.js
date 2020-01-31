@@ -101,15 +101,15 @@ export class SubredditImageCommand extends Command {
 
   async run(message) {
     const posts = await this.getPosts();
-    if (!posts.length) return this.post("Sorry, I couldn't find any images to post.");
+    if (!posts.length) return this.post("Sorry, I couldn't find any images to post.", message);
     
     this.cacheIndex = (this.cacheIndex + 1) % posts.length;
     const { title, url } = this.posts[this.cacheIndex];
-    this.post(`${title} ${url}`, message);
+    return this.post(`${title} ${url}`, message);
   }
   
   async getPosts() {
-    this.checkExpiry();
+    if (this.isExpired()) this.cache = [];
     
     if (!this.cache.length) {
       const url = `https://www.reddit.com/r/${this.subreddit}/${this.type}.json`;
@@ -132,17 +132,11 @@ export class SubredditImageCommand extends Command {
     return this.cache;
   }
   
-  checkExpiry() {
+  isExpired() {
     const now = Date.now();
     const timestamp = this.cacheTimestamp;
     const cacheAge = now - timestamp;
-    if (cacheAge > this.cacheExpiry) this.expire();
-  }
-
-  expire() {
-    this.cache = [];
-    this.cacheTimestamp = 0;
-    this.cacheIndex = 0;
+    return cacheAge > this.cacheExpiry;
   }
 }
 

@@ -160,9 +160,9 @@ export class LootCommand extends RandomSpawnCommand {
   ];
   
   namingSchemes = {
-    'common': '${type}',
-    'uncommon': '${type} of ${source}',
-    'rare': '${prefix}${suffix}, ${type} of ${source}'
+    common: '${type}',
+    uncommon: '${type} of ${source}',
+    rare: '${prefix}${suffix}, ${type} of ${source}'
   };
 
   data = [
@@ -1551,11 +1551,11 @@ export class LootCommand extends RandomSpawnCommand {
         "mead"
       ],
       namingSchemes: {
-        'common': 'Mug of ${prefix} ${type}',
-        'uncommon': 'Flask of ${prefix} ${type}',
-        'rare': 'Tankard of ${prefix} ${suffix} ${type}',
-        'epic': 'Flagon of ${prefix} ${suffix} ${type}',
-        'legendary': 'Barrel of ${prefix} ${suffix} ${type}'
+        common: 'Mug of ${prefix} ${type}',
+        uncommon: 'Flask of ${prefix} ${type}',
+        rare: 'Tankard of ${prefix} ${suffix} ${type}',
+        epic: 'Flagon of ${prefix} ${suffix} ${type}',
+        legendary: 'Barrel of ${prefix} ${suffix} ${type}'
       }
     }
   ];

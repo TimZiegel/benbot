@@ -104,7 +104,7 @@ export class SubredditImageCommand extends Command {
     if (!posts.length) return this.post("Sorry, I couldn't find any images to post.", message);
     
     this.cacheIndex = (this.cacheIndex + 1) % posts.length;
-    const { title, url } = this.posts[this.cacheIndex];
+    const { title, url } = posts[this.cacheIndex];
     return this.post(`${title} ${url}`, message);
   }
   

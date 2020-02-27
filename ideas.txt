@@ -1,6 +1,23 @@
-- Next bet roll starts at 30
-- Next pokemon catch awards double gold
-- Your next loot will is guaranteed to be legendary
-- Immediately awarded a pokemon
-- Random gold reward
-- Nothing
+Shop items
+
+Good:
+- Trick coin: Your next bet roll cannot be lower than 30
+- Blessed coin: Adds 10 to your next 10 bet rolls
+- Rare candy: Your next pokemon catch awards double gold
+- Bind on Equip token: Your next loot awards double gold
+- Titanforge: Your next loot is guaranteed to be legendary quality
+- Warforge: Your next loot is guaranteed to be rare quality
+- Masterball: You will immediately catch the next available pokemon
+- Bonus roll coin: You will immediately loot the next available chest
+- Blue shell: You steal 10% of the richest user's total gold
+- EXP share: Earn 1 gold for each pokemon you own
+- Diamond Ring: Earn 500 gold
+- Coin purse: Random gold between 1-300
+
+Bad:
+- Cursed coin: Subtracts 10 from your next 10 bet rolls
+- Safari ball: You have a 50% chance to miss your next pokemon catch
+- Flimsy lockpick: You have a 50% chance to fail to loot your next loot chest
+- Vendor trash: Your next loot is guaranteed to be common quality
+- Frayed wallet: You lose 10% of your total gold
+- Fool's gold: Nothing

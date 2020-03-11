@@ -102,6 +102,11 @@ export const armor = [
     armorTypes: ["mail", "leather", "cloth"],
     armorSlots: ["chest"]
   },
+  {
+    name: "Tabard",
+    armorTypes: ["cloth", "leather", "mail", "plate"],
+    armorSlots: ["chest"]
+  },
   // Shoulders
   {
     name: "Pauldron",
@@ -133,6 +138,11 @@ export const armor = [
     armorTypes: ["plate", "mail", "leather", "cloth"],
     armorSlots: ["shoulder"]
   },
+  {
+    name: "Epaulets",
+    armorTypes: ["leather", "mail", "plate"],
+    armorSlots: ["shoulder"]
+  },
   // Backs
   {
     name: "Shroud",
@@ -159,6 +169,11 @@ export const armor = [
     armorTypes: ["plate", "mail", "leather", "cloth"],
     armorSlots: ["back"]
   },
+  {
+    name: "Stole",
+    armorTypes: ["cloth"],
+    armorSlots: ["back"]
+  },
   // Hands
   {
     name: "Gloves",
@@ -178,6 +193,11 @@ export const armor = [
   {
     name: "Bracers",
     armorTypes: ["plate", "mail", "leather", "cloth"],
+    armorSlots: ["hands"]
+  },
+  {
+    name: "Grips",
+    armorTypes: ["plate", "mail", "leather"],
     armorSlots: ["hands"]
   },
   // Legs
@@ -211,6 +231,11 @@ export const armor = [
     armorTypes: ["leather"],
     armorSlots: ["legs"]
   },
+  {
+    name: "Gown",
+    armorTypes: ["cloth"],
+    armorSlots: ["legs"]
+  },
   // Feet
   {
     name: "Greaves",
@@ -224,7 +249,7 @@ export const armor = [
   },
   {
     name: "Sabatons",
-    armorTypes: ["plate"],
+    armorTypes: ["plate", "mail"],
     armorSlots: ["feet"]
   },
   {
@@ -235,11 +260,6 @@ export const armor = [
   {
     name: "Slippers",
     armorTypes: ["cloth"],
-    armorSlots: ["feet"]
-  },
-  {
-    name: "Sneakers",
-    armorTypes: ["leather"],
     armorSlots: ["feet"]
   },
   {
@@ -461,5 +481,45 @@ export const owners = [
   {
     name: "Battlemage",
     armorTypes: ["cloth"]
+  },
+  {
+    name: "Seeker",
+    armorTypes: ["cloth", "leather", "mail"]
+  },
+  {
+    name: "Annihilan",
+    armorTypes: ["cloth", "plate"]
+  },
+  {
+    name: "Annihilator",
+    armorTypes: ["cloth", "plate"]
+  },
+  {
+    name: "Beheader",
+    armorTypes: ["leather", "mail", "plate"]
+  },
+  {
+    name: "Loremaster",
+    armorTypes: ["cloth"]
+  },
+  {
+    name: "Shadow Stalker",
+    armorTypes: ["leather"]
+  },
+  {
+    name: "Shapeshifter",
+    armorTypes: ["leather", "cloth"]
+  },
+  {
+    name: "Ancient One",
+    armorTypes: ["cloth", "mail"]
+  },
+  {
+    name: "Cultist",
+    armorTypes: ["cloth", "leather", "mail", "plate"]
+  },
+  {
+    name: "Fleshripper",
+    armorTypes: ["leather", "mail"]
   }
 ];

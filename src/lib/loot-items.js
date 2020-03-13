@@ -475,10 +475,6 @@ export const owners = [
     armorTypes: ["leather", "mail"]
   },
   {
-    name: "Dark Ranger",
-    armorTypes: ["leather", "mail"]
-  },
-  {
     name: "Battlemage",
     armorTypes: ["cloth"]
   },
@@ -521,5 +517,17 @@ export const owners = [
   {
     name: "Fleshripper",
     armorTypes: ["leather", "mail"]
+  },
+  {
+    name: "Legionnaire",
+    armorTypes: ["cloth", "leather", "mail", "plate"]
+  },
+  {
+    name: "Butcher",
+    armorTypes: ["leather", "plate"]
+  },
+  {
+    name: "Conqueror",
+    armorTypes: ["cloth", "leather", "mail", "plate"]
   }
 ];

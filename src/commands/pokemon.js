@@ -21,6 +21,7 @@ export class PokemonCommand extends RandomSpawnCommand {
   pokemonTimestamp = 0;
   pokemonApi = "https://pokeapi.co/api/v2";
   pokemonImageApi = "https://play.pokemonshowdown.com/sprites/xyani/";
+  pokemonDefaultImage = 'assets/pokemon/missingno.png';
   pokemonSpawnImage = 'assets/pokemon.png';
   pokemonSpawnText = 'A wild Pokémon appeared! Use the `!catch` command to catch it!';
   pokemonMasterGold = 500;
@@ -30,7 +31,7 @@ export class PokemonCommand extends RandomSpawnCommand {
   }
   
   async claim(message) {
-    await this.deleteSpawnMessage();
+    await this.setSpawnMessage(null);
     await this.getPokemon();
     
     const caughtPokemon = await pokemon.getPokemonNames(message.author);
@@ -113,24 +114,40 @@ export class PokemonCommand extends RandomSpawnCommand {
   
   async getPokemonImage(pokemon) {
     const { name } = pokemon;
-    const imagePath = `${name}.gif`;
-    const url = `${this.pokemonImageApi}${imagePath}`;
-    const localImagePath = `assets/pokemon/${imagePath}`;
-    const fileExists = fs.existsSync(localImagePath);
+    const localGif = `assets/pokemon/${name}.gif`;
+    const localPng = `assets/pokemon/${name}.png`;
     
-    if (!fileExists) {
-      await axios({ url, responseType: 'stream' })
-        .then(response => (
-          new Promise((resolve, reject) => {
-            response.data
-              .pipe(fs.createWriteStream(localImagePath))
-              .on('finish', () => resolve())
-              .on('error', e => reject(e));
-          }))
-        );
+    if (fs.existsSync(localGif)) return localGif;
+    if (fs.existsSync(localPng)) return localPng;
+    
+    try {
+      const { data } = await axios({ url: `${this.pokemonImageApi}${name}.gif`, responseType: 'stream' });
+      const success = await savePokemonImage(localGif, data);
+      if (success) return localGif;
+    } catch(e) {}
+
+    try {
+      const { sprites } = await this.getPokemonInfo(pokemon);
+      const { data } = await axios({ url: sprites.front_default, responseType: 'stream' });
+      const success = savePokemonImage(localPng, data);
+      if (success) return localPng;
+    } catch(e) {}
+      
+    return this.pokemonDefaultImage;
+  }
+
+  async savePokemonImage(localImagePath, dataStream) {
+    try {
+      await new Promise((resolve, reject) => {
+        dataStream.pipe(fs.createWriteStream(localImagePath))
+          .on('finish', () => resolve())
+          .on('error', e => reject(e));
+      });
+    } catch(e) {
+      return false;
     }
 
-    return localImagePath;
+    return true;
   }
   
   unavailableTexts = [

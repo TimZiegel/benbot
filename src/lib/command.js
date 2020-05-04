@@ -173,12 +173,12 @@ export class RandomSpawnCommand extends Command {
 
     try {
       await this.claim(message, this.spawnMessage);
-      this.setSpawnMessage(null);
     } catch(e) {
       console.warn(e);
       await this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
-      this.expire();
     }
+
+    await this.expire();
   }
   
   onMessage(message) {
@@ -188,24 +188,11 @@ export class RandomSpawnCommand extends Command {
     else this.checkExpiry();
   }
 
-  setSpawnMessage(message = null) {
+  async setSpawnMessage(message = null) {
     clearTimeout(this.spawnTimer);
     this.spawnTimer = null;
-
-    if (message) {
-      this.spawnMessage = message;
-      this.spawnStatus = this.spawnStatuses.ACTIVE;
-    } else {
-      this.spawnMessage = null;
-      this.spawnStatus = this.spawnStatuses.NONE;
-    }
-  }
-  
-  async deleteSpawnMessage() {
-    return this.spawnMessage
-      .delete()
-      .then(() => this.setSpawnMessage(null))
-      .catch(() => this.setSpawnMessage(null));
+    if (!message && this.spawnMessage) await this.spawnMessage.delete();
+    this.spawnMessage = message;
   }
   
   startTimer(message) {
@@ -230,8 +217,9 @@ export class RandomSpawnCommand extends Command {
     const spawnAge = now - timestamp;
     if (spawnAge > this.spawnExpiry) this.expire();
   }
-  
-  expire() {
-    return this.deleteSpawnMessage();
+
+  async expire() {
+    await this.setSpawnMessage(null);
+    this.spawnStatus = this.spawnStatuses.NONE;
   }
 }

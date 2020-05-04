@@ -27,7 +27,7 @@ export class LootCommand extends RandomSpawnCommand {
   }
   
   async claim(message) {
-    await this.deleteSpawnMessage();
+    await this.setSpawnMessage(null);
     
     const random = Math.random();
     let rarity = this.rarities

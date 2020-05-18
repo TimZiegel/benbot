@@ -91,7 +91,7 @@ export class SubredditImageCommand extends Command {
   subreddit = "";
   type = "top";
   cache = []; // Cached posts from the subreddit
-  cacheExpiry = 900000; // 15 minutes in ms
+  cacheExpiry = 1800000; // 30 minutes in ms
   cacheTimestamp = 0;
   cacheIndex = 0;
 

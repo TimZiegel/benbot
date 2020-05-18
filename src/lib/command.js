@@ -174,7 +174,7 @@ export class RandomSpawnCommand extends Command {
     try {
       await this.claim(message, this.spawnMessage);
     } catch(e) {
-      console.warn(e);
+      console.error(e);
       await this.post('Sorry, an error occurred. Your item was lost in the twisting nether.', message);
     }
 
@@ -193,6 +193,7 @@ export class RandomSpawnCommand extends Command {
     this.spawnTimer = null;
     if (!message && this.spawnMessage) await this.spawnMessage.delete();
     this.spawnMessage = message;
+    return message;
   }
   
   startTimer(message) {
@@ -202,7 +203,8 @@ export class RandomSpawnCommand extends Command {
     this.spawnTimer = setTimeout(() => (
       this.spawn(message)
         .then(spawnMessage => this.setSpawnMessage(spawnMessage))
-        .catch(() => this.setSpawnMessage(null))
+        .then(() => this.spawnStatus = this.spawnStatuses.ACTIVE)
+        .catch(() => this.expire())
     ), delay);
   }
 

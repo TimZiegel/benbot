@@ -21,7 +21,6 @@ export class PokemonCommand extends RandomSpawnCommand {
   pokemonTimestamp = 0;
   pokemonApi = "https://pokeapi.co/api/v2";
   pokemonImageApi = "https://play.pokemonshowdown.com/sprites/xyani/";
-  pokemonDefaultImage = 'assets/pokemon/missingno.png';
   pokemonSpawnImage = 'assets/pokemon.png';
   pokemonSpawnText = 'A wild Pokémon appeared! Use the `!catch` command to catch it!';
   pokemonMasterGold = 500;
@@ -52,9 +51,10 @@ export class PokemonCommand extends RandomSpawnCommand {
       },
       title: `**${pokemonName}**`,
       color: pokemonTypeColor,
-      file: pokemonImage,
       footer: {}
     };
+
+    if (pokemonImage) embedOptions.file = pokemonImage;
     
     return pokemon.catch(message.author, spawnedPokemon.name)
       .then(({ amount }) => {
@@ -117,23 +117,22 @@ export class PokemonCommand extends RandomSpawnCommand {
     const localGif = `assets/pokemon/${name}.gif`;
     const localPng = `assets/pokemon/${name}.png`;
     
-    if (fs.existsSync(localGif)) return localGif;
-    if (fs.existsSync(localPng)) return localPng;
-    
     try {
+      if (fs.existsSync(localGif)) return localGif;
       const { data } = await axios({ url: `${this.pokemonImageApi}${name}.gif`, responseType: 'stream' });
-      const success = await savePokemonImage(localGif, data);
+      const success = await this.savePokemonImage(localGif, data);
       if (success) return localGif;
     } catch(e) {}
-
+    
     try {
+      if (fs.existsSync(localPng)) return localPng;
       const { sprites } = await this.getPokemonInfo(pokemon);
       const { data } = await axios({ url: sprites.front_default, responseType: 'stream' });
-      const success = savePokemonImage(localPng, data);
+      const success = this.savePokemonImage(localPng, data);
       if (success) return localPng;
     } catch(e) {}
       
-    return this.pokemonDefaultImage;
+    return '';
   }
 
   async savePokemonImage(localImagePath, dataStream) {

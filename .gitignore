@@ -1,5 +1,6 @@
 node_modules/
 dist/
 assets/pokemon/*.gif
+assets/pokemon/*.png
 .env
 env.yaml

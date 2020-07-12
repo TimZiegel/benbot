@@ -38,7 +38,8 @@ export class RoarCommand extends RandomDataCommand {
     "https://i.imgur.com/XkM1yF7.png",
     "https://i.imgur.com/v6g7atz.png",
     "https://i.imgur.com/liY4mMe.gif",
-    "https://i.imgur.com/AKjabux.gif"
+    "https://i.imgur.com/AKjabux.gif",
+    "https://i.imgur.com/iNtiy1u.gif"
   ];
 
   constructor() {

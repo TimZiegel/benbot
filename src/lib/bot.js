@@ -2,6 +2,10 @@ import { Client, RichEmbed } from 'discord.js';
 
 export const bot = new Client();
 
+const botUser = new Promise(resolve => bot.on('ready', () => resolve(bot.user)));
+
+export const getBotUser = () => botUser;
+
 export const postMessage = async (message, channel) => {
   if (!message || !channel) throw new Error('Could not post message: missing parameters.');
   return channel.send(message);
@@ -18,7 +22,7 @@ export const postEmbed = async (options, channel) => {
   if (!options || !channel) throw new Error('Could not post embed: missing parameters.');
   const embed = new RichEmbed(options);
   return channel.send(embed);
-}
+};
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.username}.`);

@@ -1,3 +1,4 @@
+import { Permissions } from 'discord.js';
 import env from './env';
 
 const { TEST_SERVER } = env;
@@ -31,4 +32,9 @@ export const isTestBot = () => {
 
 export const humanize = number => {
 	return (number || 0).toLocaleString('en-US');
+};
+
+export const canPostInChannel = (channel, user) => {
+  const permissions = channel.memberPermissions(user);
+  return permissions && permissions.has(Permissions.FLAGS.SEND_MESSAGES);
 };

@@ -5,7 +5,6 @@ import { commands } from './lib/commands';
 import { RandomSpawnCommand } from './lib/command';
 import { goodbyeCommand } from './commands/goodbye';
 import { messageReactionCommand } from './commands/message-reaction';
-import { lootCommand, LootCommand } from './commands/loot';
 
 const { DISCORD_TOKEN, TEST_DISCORD_TOKEN } = env;
 

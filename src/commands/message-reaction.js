@@ -1,4 +1,6 @@
 import { Command } from '../lib/command';
+import { getBotUser } from '../lib/bot';
+import { canPostInChannel } from '../lib/utils';
 
 export class MessageReactionCommand extends Command {
 	secret = true;
@@ -8,8 +10,9 @@ export class MessageReactionCommand extends Command {
 		super();
 	}
 
-	run(message) {
-		if (message.reactions.array().length === 3) {
+	async run(message) {
+    const botUser = await getBotUser();
+    if (canPostInChannel(message.channel, botUser) && message.reactions.array().length === 3) {
 			message
 				.react('🤖')
 				.catch(e => console.error(`Message reaction error: ${e}`));

@@ -33,8 +33,7 @@ export class PokemonCommand extends RandomSpawnCommand {
     await this.setSpawnMessage(null);
     await this.getPokemon();
     
-    const caughtPokemon = await pokemon.getPokemonNames(message.author);
-    const uncaughtPokemon = this.pokemon.filter(({ name }) => !caughtPokemon.includes(name));
+    const uncaughtPokemon = await this.getUncaughtPokemon(message.author);
     const caughtEmAll = !uncaughtPokemon.length;
     const eligiblePokemon = caughtEmAll ? this.pokemon : uncaughtPokemon;
 
@@ -147,6 +146,18 @@ export class PokemonCommand extends RandomSpawnCommand {
     }
 
     return true;
+  }
+
+  async getCaughtPokemon(user) {
+    return pokemon.getPokemonNames(user);
+  }
+
+  async getUncaughtPokemon(user) {
+    const caughtPokemon = await this.getCaughtPokemon(user);
+    return this.pokemon.filter(pokemon => {
+      const name = this.getPokemonName(pokemon);
+      return !caughtPokemon.includes(name);
+    });
   }
   
   unavailableTexts = [

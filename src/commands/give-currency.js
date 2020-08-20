@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Command } from '../lib/command';
 import { currency, defaultCurrency } from '../lib/currency';
 import { humanize } from '../lib/utils';
@@ -17,7 +18,7 @@ export class GiveCurrencyCommand extends Command {
     // TODO: infer type from message
     const { type } = defaultCurrency;
     const mentions = message.mentions.users.array();
-    if (!mentions.length) return this.post(`Whoops! You must mention a user (or users) to give currency to.`, message);
+    if (isEmpty(mentions)) return this.post(`Whoops! You must mention a user (or users) to give currency to.`, message);
     const trickery = mentions.find(user => user.id === message.author.id);
     if (trickery) return this.post(`What the - you can't give currency to yourself! I'm calling the IRS.`, message);
     const amountString = message.content.match(/\s\d+\b/i);

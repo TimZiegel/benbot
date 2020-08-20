@@ -1,5 +1,6 @@
 import fs from 'fs';
 import axios from 'axios';
+import { isEmpty } from 'lodash';
 import { RandomSpawnCommand } from '../lib/command';
 import { getRandom } from '../lib/utils';
 import { pokemonTypeColors } from '../lib/colors';
@@ -34,7 +35,7 @@ export class PokemonCommand extends RandomSpawnCommand {
     await this.getPokemon();
     
     const uncaughtPokemon = await this.getUncaughtPokemon(message.author);
-    const caughtEmAll = !uncaughtPokemon.length;
+    const caughtEmAll = isEmpty(uncaughtPokemon);
     const eligiblePokemon = caughtEmAll ? this.pokemon : uncaughtPokemon;
 
     const randomPokemon = getRandom(eligiblePokemon);
@@ -78,7 +79,7 @@ export class PokemonCommand extends RandomSpawnCommand {
     const now = Date.now();
     const pokemonAge = now - this.pokemonTimestamp;
     const url = `${this.pokemonApi}/pokemon?limit=5000`
-    if (this.pokemon.length && pokemonAge < this.pokemonExpiry) return this.pokemon;
+    if (!isEmpty(this.pokemon) && pokemonAge < this.pokemonExpiry) return this.pokemon;
     else return axios
       .get(url)
       .then(({ data }) => this.setPokemon(data));
@@ -106,6 +107,7 @@ export class PokemonCommand extends RandomSpawnCommand {
   }
   
   getPokemonTypeColor(pokemon) {
+    if (isEmpty(pokemon.types)) return pokemonTypeColors.normal;
     const firstType = pokemon.types.reduce((acc, curr) => curr.slot < acc.slot ? curr : acc);
     const typeName = firstType.type.name;
     return pokemonTypeColors[typeName] || pokemonTypeColors.normal;

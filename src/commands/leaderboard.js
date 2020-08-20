@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Command } from '../lib/command';
 import { currency, currencies, defaultCurrency } from '../lib/currency';
 import { humanize } from '../lib/utils';
@@ -21,7 +22,7 @@ export class LeaderboardCommand extends Command {
       
       const { color, name: currencyName } = currencies.find(({ type }) => type === currencyType);
       const users = await currency.leaderboard(currencyType);
-      if (!users.length) return this.post(`Whoops! No one has collected anything yet. Check back later.`, message);
+      if (isEmpty(users)) return this.post(`Whoops! No one has collected anything yet. Check back later.`, message);
 
       const fields = users
         .slice(0, this.cutoff)

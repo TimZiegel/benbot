@@ -1,4 +1,5 @@
 import axios from "axios";
+import { isEmpty } from "lodash";
 import env from "../lib/env";
 import {
   getRandom,
@@ -101,7 +102,7 @@ export class SubredditImageCommand extends Command {
 
   async run(message) {
     const posts = await this.getPosts();
-    if (!posts.length) return this.post("Sorry, I couldn't find any images to post.", message);
+    if (isEmpty(posts)) return this.post("Sorry, I couldn't find any images to post.", message);
     
     this.cacheIndex = (this.cacheIndex + 1) % posts.length;
     const { title, url } = posts[this.cacheIndex];
@@ -111,7 +112,7 @@ export class SubredditImageCommand extends Command {
   async getPosts() {
     if (this.isExpired()) this.cache = [];
     
-    if (!this.cache.length) {
+    if (isEmpty(this.cache)) {
       const url = `https://www.reddit.com/r/${this.subreddit}/${this.type}.json`;
       this.cacheTimestamp = Date.now();
       this.cacheIndex = 0;

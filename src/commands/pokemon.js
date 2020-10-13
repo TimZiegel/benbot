@@ -15,7 +15,6 @@ export class PokemonCommand extends RandomSpawnCommand {
 
   spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
   spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
-  spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
 
   pokemon = [];
   pokemonExpiry = 604800000; // Refresh pokemon every week
@@ -82,7 +81,8 @@ export class PokemonCommand extends RandomSpawnCommand {
     if (!isEmpty(this.pokemon) && pokemonAge < this.pokemonExpiry) return this.pokemon;
     else return axios
       .get(url)
-      .then(({ data }) => this.setPokemon(data));
+      .then(({ data }) => this.setPokemon(data))
+      .catch(e => console.warn(`Failed to get list of all pokemon. ${e}`));
   }
   
   setPokemon(data) {
@@ -94,8 +94,11 @@ export class PokemonCommand extends RandomSpawnCommand {
   }
   
   async getPokemonInfo(pokemon) {
-    const { url } = pokemon;
-    return axios.get(url).then(({ data }) => data);
+    const { url, name } = pokemon;
+    return axios
+      .get(url)
+      .then(({ data }) => data)
+      .catch(e => console.warn(`Failed to get pokemon info for Pokemon "${name}" from URL "${url}". ${e}`));
   }
   
   getPokemonName(pokemon) {
@@ -123,7 +126,9 @@ export class PokemonCommand extends RandomSpawnCommand {
       const { data } = await axios({ url: `${this.pokemonImageApi}${name}.gif`, responseType: 'stream' });
       const success = await this.savePokemonImage(localGif, data);
       if (success) return localGif;
-    } catch(e) {}
+    } catch(e) {
+      console.log(`Failed to get GIF for Pokemon "${name}". ${e}`);
+    }
     
     try {
       if (fs.existsSync(localPng)) return localPng;
@@ -131,7 +136,9 @@ export class PokemonCommand extends RandomSpawnCommand {
       const { data } = await axios({ url: sprites.front_default, responseType: 'stream' });
       const success = this.savePokemonImage(localPng, data);
       if (success) return localPng;
-    } catch(e) {}
+    } catch(e) {
+      console.log(`Failed to get PNG for Pokemon "${name}". ${e}`);
+    }
       
     return '';
   }

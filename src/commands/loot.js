@@ -11,7 +11,6 @@ export class LootCommand extends RandomSpawnCommand {
   
   spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
   spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
-  spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
   
   lootSpawnImage = 'assets/loot.jpg';
   lootSpawnText = 'A wild chest appears! Use the `!loot` command to claim it!';

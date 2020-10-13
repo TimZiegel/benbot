@@ -145,6 +145,7 @@ export class RandomSpawnCommand extends Command {
   spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
   spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
   spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
+  spawnRefractory = 5000; // After a spawn has been claimed, wait 10 minutes before attempting to spawn another
   spawnMessage = null;
   spawnTimer = null;
   spawnTimestamp = 0;
@@ -154,7 +155,8 @@ export class RandomSpawnCommand extends Command {
     NONE: "none",
     PENDING: "pending",
     ACTIVE: "active",
-    CLAIMED: "claimed"
+    CLAIMED: "claimed",
+    REFRACTORY: "refractory",
   };
 
   constructor() {
@@ -187,6 +189,7 @@ export class RandomSpawnCommand extends Command {
     const random = Math.random();
     if (this.spawnStatus === this.spawnStatuses.NONE && random < this.spawnChance) this.startTimer(message);
     else this.checkExpiry();
+    return this.isSpawned();
   }
 
   async setSpawnMessage(message = null) {
@@ -213,6 +216,10 @@ export class RandomSpawnCommand extends Command {
     return this.spawnStatus === this.spawnStatuses.ACTIVE && !!this.spawnMessage;
   }
 
+  isSpawned() {
+    return this.spawnStatus !== this.spawnStatuses.NONE;
+  }
+
   checkExpiry() {
     if (!this.isActive()) return;
     const now = Date.now();
@@ -223,6 +230,7 @@ export class RandomSpawnCommand extends Command {
 
   async expire() {
     await this.setSpawnMessage(null);
-    this.spawnStatus = this.spawnStatuses.NONE;
+    this.spawnStatus = this.spawnStatuses.REFRACTORY;
+    setTimeout(() => this.spawnStatus = this.spawnStatuses.NONE, this.spawnRefractory);
   }
 }

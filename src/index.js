@@ -1,6 +1,6 @@
 import env from './lib/env';
 import { bot } from './lib/bot';
-import { isTestBot } from './lib/utils';
+import { isTestBot, checkRandomSpawns } from './lib/utils';
 import { commands } from './lib/commands';
 import { RandomSpawnCommand } from './lib/command';
 import { goodbyeCommand } from './commands/goodbye';
@@ -12,11 +12,7 @@ const onMessage = message => {
   if (message.author.bot) return;
   const command = commands.find(cmd => cmd && cmd.check(message));
   if (command) command.run(message);
-  if (!command || !(command instanceof RandomSpawnCommand)) {
-    commands
-      .filter(command => command instanceof RandomSpawnCommand)
-      .forEach(command => command.onMessage(message));
-  }
+  if (!command || !(command instanceof RandomSpawnCommand)) checkRandomSpawns(message, commands);
 };
 
 bot.on('message', message => onMessage(message));

@@ -1,4 +1,5 @@
 import { Permissions } from 'discord.js';
+import { RandomSpawnCommand } from './command';
 import env from './env';
 
 const { TEST_SERVER } = env;
@@ -37,4 +38,14 @@ export const humanize = number => {
 export const canPostInChannel = (channel, user) => {
   const permissions = channel.memberPermissions(user);
   return permissions && permissions.has(Permissions.FLAGS.SEND_MESSAGES);
+};
+
+export const checkRandomSpawns = (message, commands) => {
+  const randomSpawnCommands = commands.filter(command => command instanceof RandomSpawnCommand);
+  const anySpawned = randomSpawnCommands.some(command => command.isSpawned());
+  if (!anySpawned) {
+    randomSpawnCommands
+      .sort(() => .5 - Math.random())
+      .some(command => command.onMessage(message));
+  }
 };

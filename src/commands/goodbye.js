@@ -2,7 +2,7 @@ import { getRandom } from '../lib/utils';
 import { RandomDataCommand } from '../lib/command';
 
 export class GoodbyeCommand extends RandomDataCommand {
-  help = 'Says goodbye when someone leaves the server.';
+  help = 'This command says goodbye when someone leaves the server.';
   
 	data = [
 		":( Bye ${name}...",

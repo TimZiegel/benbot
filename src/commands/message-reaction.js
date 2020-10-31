@@ -4,7 +4,7 @@ import { canPostInChannel } from '../lib/utils';
 
 export class MessageReactionCommand extends Command {
 	secret = true;
-	help = 'Reacts to a message. Benbot just wants to be part of the fun.';
+	help = 'This command reacts to a message. Benbot wants to be part of the fun, too!';
 	
 	constructor() {
 		super();

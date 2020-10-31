@@ -7,7 +7,7 @@ import { bot } from '../lib/bot';
 
 export class GiveCurrencyCommand extends Command {
   command = 'give';
-  help = 'Gives currency to another user (or users). Mention a user and specify an amount to make it rain.';
+  help = 'The !give command allows you to give gold to another user (or users). Mention a user and specify an amount to make it rain.';
   example = '!give @Benadryll 100';
 
 	constructor() {

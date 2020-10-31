@@ -3,7 +3,7 @@ import { SubredditImageCommand } from '../lib/command';
 export class DrinkCommand extends SubredditImageCommand {
 	command = 'drink';
 	subreddit = 'beerporn+cocktails';
-	help = 'Displays a random image of an alcoholic beverage.';
+	help = 'The !drink command displays a random image of an alcoholic beverage from reddit.';
 	example = '!drink';
 
 	constructor() {

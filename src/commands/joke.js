@@ -3,7 +3,7 @@ import { Command } from "../lib/command";
 
 export class JokeCommand extends Command {
   command = "joke";
-  help = "Tells a hilarious joke!";
+  help = `The !joke command tells a hilarious* joke from icanhazdadjoke.com! *Note: hilarity not guaranteed.`;
   example = "!joke";
 
   jokeApi = "https://icanhazdadjoke.com/";

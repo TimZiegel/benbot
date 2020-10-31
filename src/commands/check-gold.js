@@ -4,7 +4,7 @@ import { humanize } from '../lib/utils';
 
 export class CheckGoldCommand extends Command {
   command = 'gold';
-  help = 'Displays how much gold you have.';
+  help = 'The !gold command displays how much gold you have. You can earn gold from a variety of activities, like looting chests and catching Pokémon.';
   example = '!gold';
   type = 'gold';
 

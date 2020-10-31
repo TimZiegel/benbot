@@ -1,4 +1,4 @@
-import { benbotCommand } from "../commands/benbot";
+import { helpCommand } from "../commands/help";
 import { lootCommand } from "../commands/loot";
 import { pokemonCommand } from "../commands/pokemon";
 import { spawnStatusCommand } from "../commands/spawn-status";
@@ -24,10 +24,9 @@ import { roarCommand } from "../commands/roar";
 import { blingtronCommand } from "../commands/blingtron";
 import { justGuildyThingsCommand } from "../commands/just-guildy-things";
 import { nsfwCommand } from "../commands/nsfw";
-import { christmasCommand } from "../commands/christmas";
 
 export const commands = [
-  benbotCommand,
+  helpCommand,
   lootCommand,
   pokemonCommand,
   spawnStatusCommand,
@@ -52,6 +51,5 @@ export const commands = [
   roarCommand,
   blingtronCommand,
   justGuildyThingsCommand,
-  nsfwCommand,
-  christmasCommand
+  nsfwCommand
 ];

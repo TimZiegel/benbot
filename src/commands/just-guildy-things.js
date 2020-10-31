@@ -3,7 +3,7 @@ import { RandomDataCommand } from "../lib/command";
 export class JustGuildyThingsCommand extends RandomDataCommand {
   command = "justguildythings";
   aliases = ["guild"];
-  help = "Displays a dumb meme about the guild.";
+  help = "The !justguildythings command displays a dumb meme about the guild.";
   example = "!justguildythings";
 
   data = [

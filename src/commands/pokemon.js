@@ -10,7 +10,7 @@ import { currency } from '../lib/currency';
 export class PokemonCommand extends RandomSpawnCommand {
   command = 'catch';
   aliases = ['pokeball'];
-  help = 'Catches a pokemon, if one has appeared. Try and catch \'em all!';
+  help = 'The !catch command attempts to catch a Pokémon, but only if a wild Pokémon has appeared. Wild Pokémon spawn at random intervals and are removed when they are caught. When a wild Pokémon appears, a picture and message will be posted in a random channel. Be quick! Catching a Pokémon will earn you gold, which you can bet with or trade with other people.';
   example = '!catch';
 
   spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
@@ -71,7 +71,8 @@ export class PokemonCommand extends RandomSpawnCommand {
   
   async unavailable(message) {
     const unavailableText = getRandom(this.unavailableTexts);
-    return this.post(unavailableText, message);
+    const text = `${unavailableText} _(Confused? Use the command _\`!help catch\`_ to learn more!)_`;
+    return this.post(text, message);
   }
   
   async getPokemon() {

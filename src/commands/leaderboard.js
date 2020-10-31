@@ -6,7 +6,7 @@ import { humanize } from '../lib/utils';
 export class LeaderboardCommand extends Command {
   command = 'leaderboard';
   aliases = ['leaderboards'];
-  help = 'Shows the top hoarders on the server.';
+  help = 'The !leaderboard command shows the gold top gold hoarders on the server. You can also use !leaderboard pokemon to show the top Pokémon trainers!';
   example = '!leaderboard';
   cutoff = 10;
   defaultType = defaultCurrency.type;

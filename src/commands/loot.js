@@ -6,7 +6,7 @@ import { colors } from '../lib/colors';
 
 export class LootCommand extends RandomSpawnCommand {
   command = 'loot';
-  help = 'Loots an item if a chest has spawned. This earns gold.';
+  help = `The !loot command loots an item from a chest, but only if there's a chest available. Chests spawn at random intervals and are destroyed when they are looted. When a chest spawns, a picture and message will be posted in a random channel. Be quick! Looting an item will earn you gold, which you can bet with or trade with other people.`;
   example = '!loot';
   
   spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
@@ -61,7 +61,8 @@ export class LootCommand extends RandomSpawnCommand {
   
   async unavailable(message) {
     const unavailableText = getRandom(this.unavailableTexts);
-    return this.post(unavailableText, message);
+    const text = `${unavailableText} _(Confused? Use the command _\`!help loot\`_ to learn more!)_`;
+    return this.post(text, message);
   }
   
   getItemName(data, rarity) {

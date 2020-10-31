@@ -3,8 +3,8 @@ import { RandomDataCommand } from "../lib/command";
 export class HiCommand extends RandomDataCommand {
   command = "hi";
   aliases = ["hello"];
-  help = "Says hello!";
-  example = "!hi";
+  help = "The !hi command says hello. You can also mention a user to say hello directly to them!";
+  example = "!hi @Benadryll";
 
   data = [
     "Oh, uhh... Hi.",

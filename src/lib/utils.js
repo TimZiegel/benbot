@@ -2,7 +2,7 @@ import { Permissions } from 'discord.js';
 import { RandomSpawnCommand } from './command';
 import env from './env';
 
-const { TEST_SERVER } = env;
+const { TEST_SERVER, COMMAND_PREFIX } = env;
 
 export const getRandom = array => {
 	const index = Math.floor(Math.random() * array.length);
@@ -29,6 +29,18 @@ export const isTestServer = guild => {
 
 export const isTestBot = () => {
 	return process.env.NODE_ENV !== 'production';
+};
+
+export const isCommand = (message = '', commands = '', aliases = []) => {
+  return [command, ...aliases].some(cmd => (
+    message.match(new RegExp(`^\\${COMMAND_PREFIX}${command}\\b`, "i"))
+  ));
+};
+
+export const removeCommand = (message, command = '', aliases = []) => {
+  return [command, ...aliases].reduce((acc, curr) => (
+    acc.replace(new RegExp(`^\\${COMMAND_PREFIX}${curr}\\s*`, "i"), '')
+  ), message);
 };
 
 export const humanize = number => {

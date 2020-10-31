@@ -7,13 +7,16 @@ import { colors } from '../lib/colors';
 import { users } from '../lib/users';
 import { db, timestamp } from '../lib/database';
 
+const betsPerPeriod = 10;
+const eligibilityPeriod = 86400000;
+
 export class BetCurrencyCommand extends Command {
   command = 'bet';
   aliases = ['roll'];
-  help = 'Bet some gold and roll the die! Rolling 50+ yields 1.5x gold. Rolling 80+ yields 2x gold. Rolling 90+ yields 3x. Rolling 100 yields 5x.';
+  help = `The !bet command allows you to bet your hard earned gold for a chance to win big! Rolling 50 or higher yields 1.5x your bet. Rolling 80 or higher yields 2x your bet. Rolling 90 or higher yields 3x. Rolling 100 yields 5x. You may bet a maximum of ${betsPerPeriod} times every ${eligibilityPeriod/1000/60/60} hours.`;
   example = '!bet 10';
-  eligibilityPeriod = 86400000; // One day in ms
-  betsPerPeriod = 10; // Max bids per period
+  eligibilityPeriod = eligibilityPeriod; // One day in ms
+  betsPerPeriod = betsPerPeriod; // Max bids per period
   
   data = {
     unlucky: [

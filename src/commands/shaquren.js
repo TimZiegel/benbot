@@ -3,7 +3,7 @@ import { RandomDataCommand } from '../lib/command';
 export class ShaqurenCommand extends RandomDataCommand {
 	secret = true;
 	command = 'shaquren';
-	help = 'Displays an image of Shaq, if he were Hak.';
+	help = `The !shaquren command displays an image of Hak, if he were Shaq.`;
 	example = '!shaquren';
 
 	data = [

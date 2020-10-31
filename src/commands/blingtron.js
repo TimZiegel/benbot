@@ -2,7 +2,7 @@ import { RandomDataCommand } from '../lib/command';
 
 export class BlingtronCommand extends RandomDataCommand {
 	command = 'blingtron';
-	help = 'Shows a dumb picture of blingtron.';
+	help = `The !blingtron command shows a dumb picture of blingtron. Don't ask why.`;
 	example = '!blingtron';
 
 	data = [

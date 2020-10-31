@@ -4,7 +4,7 @@ import { humanize } from '../lib/utils';
 
 export class CheckPokemonCommand extends Command {
   command = 'pokemon';
-  help = 'Displays how many Pokémon you have.';
+  help = `The !pokemon command displays how many Pokémon you have. Gotta catch 'em all!`;
   example = '!pokemon';
   type = 'pokemon';
 

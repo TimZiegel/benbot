@@ -31,22 +31,22 @@ export class Command {
     return regexes.some(regex => regex.test(message.content));
   }
 
-  post(text, message) {
+  post(text, message, editMessage) {
     const { channel } = message;
-    if (text) return postMessage(text, channel);
+    if (text) return postMessage(text, channel, editMessage);
     else return postMessage("Hrm, I couldn't find anything to post. Sorry, eh 🍁");
   }
 
-  async postFile(file, text, message) {
+  async postFile(file, text, message, editMessage) {
     const { channel } = message;
     if (!text || !channel) throw new Error('Cannot post file: missing parameters.');
-    return postFile(file, text, channel);
+    return postFile(file, text, channel, editMessage);
   }
 
-  async postEmbed(options, message) {
+  async postEmbed(options, message, editMessage) {
     const { channel } = message;
     if (!options || !channel) throw new Error('Cannot post embed: missing parameters.')
-    if (options) return postEmbed(options, channel);
+    if (options) return postEmbed(options, channel, editMessage);
   }
 }
 
@@ -142,10 +142,10 @@ export class SubredditImageCommand extends Command {
 }
 
 export class RandomSpawnCommand extends Command {
-  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnChance = 0.04; // Each post has a 1 in 25 chance to start the spawn timer
   spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
   spawnExpiry = 3600000; // If a spawn is triggered and no one has claimed it within 1 hour, it can be deleted
-  spawnRefractory = 5000; // After a spawn has been claimed, wait 10 minutes before attempting to spawn another
+  spawnCooldown = 300000; // After a spawn has been claimed, wait 5 minutes before attempting to spawn another
   spawnMessage = null;
   spawnTimer = null;
   spawnTimestamp = 0;
@@ -156,7 +156,7 @@ export class RandomSpawnCommand extends Command {
     PENDING: "pending",
     ACTIVE: "active",
     CLAIMED: "claimed",
-    REFRACTORY: "refractory",
+    COOLDOWN: "cooldown",
   };
 
   constructor() {
@@ -188,14 +188,13 @@ export class RandomSpawnCommand extends Command {
     if (!isTestBot() && isTestServer(message.guild)) return;
     const random = Math.random();
     if (this.spawnStatus === this.spawnStatuses.NONE && random < this.spawnChance) this.startTimer(message);
-    else this.checkExpiry();
     return this.isSpawned();
   }
 
-  async setSpawnMessage(message = null) {
+  async setSpawnMessage(message = null, despawn = true) {
     clearTimeout(this.spawnTimer);
     this.spawnTimer = null;
-    if (!message && this.spawnMessage) await this.spawnMessage.delete();
+    if (despawn && !message && this.spawnMessage) await this.despawn(this.spawnMessage);
     this.spawnMessage = message;
     return message;
   }
@@ -208,6 +207,7 @@ export class RandomSpawnCommand extends Command {
       this.spawn(message)
         .then(spawnMessage => this.setSpawnMessage(spawnMessage))
         .then(() => this.spawnStatus = this.spawnStatuses.ACTIVE)
+        .then(() => this.spawnTimer = setTimeout(() => this.expire(), this.spawnExpiry))
         .catch(() => this.expire())
     ), delay);
   }
@@ -220,6 +220,10 @@ export class RandomSpawnCommand extends Command {
     return this.spawnStatus !== this.spawnStatuses.NONE;
   }
 
+  isOnCooldown() {
+    return this.spawnStatus === this.spawnStatuses.COOLDOWN;
+  }
+
   checkExpiry() {
     if (!this.isActive()) return;
     const now = Date.now();
@@ -230,7 +234,11 @@ export class RandomSpawnCommand extends Command {
 
   async expire() {
     await this.setSpawnMessage(null);
-    this.spawnStatus = this.spawnStatuses.REFRACTORY;
-    setTimeout(() => this.spawnStatus = this.spawnStatuses.NONE, this.spawnRefractory);
+    this.spawnStatus = this.spawnStatuses.COOLDOWN;
+    setTimeout(() => this.spawnStatus = this.spawnStatuses.NONE, this.spawnCooldown);
+  }
+
+  despawn(message) {
+    return message.delete();
   }
 }

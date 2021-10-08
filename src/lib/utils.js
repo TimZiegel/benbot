@@ -54,8 +54,9 @@ export const canPostInChannel = (channel, user) => {
 
 export const checkRandomSpawns = (message, commands) => {
   const randomSpawnCommands = commands.filter(command => command instanceof RandomSpawnCommand);
-  const anySpawned = randomSpawnCommands.some(command => command.isSpawned());
-  if (!anySpawned) {
+  const shouldCheck = randomSpawnCommands.every(command => !command.isSpawned() && !command.isOnCooldown());
+
+  if (shouldCheck) {
     randomSpawnCommands
       .sort(() => .5 - Math.random())
       .some(command => command.onMessage(message));

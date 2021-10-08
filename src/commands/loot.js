@@ -9,9 +9,9 @@ export class LootCommand extends RandomSpawnCommand {
   help = `The !loot command loots an item from a chest, but only if there's a chest available. Chests spawn at random intervals and are destroyed when they are looted. When a chest spawns, a picture and message will be posted in a random channel. Be quick! Looting an item will earn you gold, which you can bet with or trade with other people.`;
   example = '!loot';
   
-  spawnChance = 0.05; // Each post has a 1 in 20 chance to start the spawn timer
+  spawnChance = 0.04; // Each post has a 1 in 25 chance to start the spawn timer
   spawnDelay = 3600000; // When a spawn is triggered, delay it for a random time between 0ms and 1 hour
-  
+
   lootSpawnImage = 'assets/loot.jpg';
   lootSpawnText = 'A wild chest appears! Use the `!loot` command to claim it!';
   lootMinBaseValue = 10;
@@ -25,7 +25,7 @@ export class LootCommand extends RandomSpawnCommand {
     this.lootMaxValue = this.lootMaxBaseValue * this.lootMaxLevel;
   }
   
-  async claim(message) {
+  async claim(message, spawnMessage) {
     await this.setSpawnMessage(null);
     
     const random = Math.random();

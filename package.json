@@ -11,9 +11,10 @@
     "build": "rimraf dist && npx babel src --out-dir dist",
     "gcp-build": "npm run build",
     "gcp-account": "gcloud auth login timothy.ziegel@gmail.com",
+    "gcp-service-account": "gcloud config unset auth/impersonate_service_account",
     "gcp-project": "gcloud config set project carbide-legend-238019",
     "gcp-deploy": "gcloud app deploy --version v1",
-    "gcp-config": "npm run gcp-account && npm run gcp-project",
+    "gcp-config": "npm run gcp-service-account && npm run gcp-account && npm run gcp-project",
     "deploy": "npm run gcp-config && npm run gcp-deploy",
     "publish": "npm run deploy"
   },

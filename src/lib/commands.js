@@ -11,6 +11,7 @@ import { shaqCommand } from "../commands/shaq";
 import { shaqFuCommand } from "../commands/shaq-fu";
 import { shaqurenCommand } from "../commands/shaquren";
 import { fartCommand } from "../commands/fart";
+import { lubeCommand } from "../commands/lube";
 import { awwCommand } from "../commands/aww";
 import { slothCommand } from "../commands/sloth";
 import { corgiCommand } from "../commands/corgi";
@@ -39,6 +40,7 @@ export const commands = [
   shaqFuCommand,
   shaqurenCommand,
   fartCommand,
+  lubeCommand,
   awwCommand,
   slothCommand,
   corgiCommand,
